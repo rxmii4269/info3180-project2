@@ -89,12 +89,26 @@ def like_post():
 
 
 
-@app.route('/')
-def index():
+@app.route('/',defaults={'path':''})
+@app.route('/<path:path>')
+def index(path):
     return render_template('index.html')
 
 
 
+
+def form_errors(form):
+    error_messages = []
+    """Collects form errors"""
+    for field, errors in form.errors.items():
+        for error in errors:
+            message = u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text,
+                    error
+                )
+            error_messages.append(message)
+
+    return error_messages
 
 
 
