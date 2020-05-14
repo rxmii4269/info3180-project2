@@ -1,21 +1,22 @@
 
+import sys
+
+import jwt
 from flask import redirect, render_template, request, url_for
-from werkzeug.utils import secure_filename
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask.json import jsonify
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 from app import app, db, login_manager
 from app.forms import LoginForm, RegisterForm, UploadForm
-from app.models import Posts, Users, Likes, Follows
-import sys
-
+from app.models import Follows, Likes, Posts, Users
 
 
 @app.route('/api/users/register',methods=['POST'])
 def register():
     form = RegisterForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST':
         username = form.username.data
         password = form.password.data
         firstname = form.firstname.data
@@ -24,23 +25,28 @@ def register():
         location = form.location.data
         biography = form.biography.data
         photo = form.photo.data
-
-
+        print(request.form)
+        return jsonify(message={"message":"User successfully registered"})
+    else:
+        errors = form_errors(form)
+        return jsonify(errors=errors)
 
 @app.route('/api/auth/login',methods=['POST'])
 def login():
     form = LoginForm()
+    
     if request.method == 'POST' and form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
+        print(request.json)
+        return jsonify(message=[{"message":"hi"}])
 
+        # user = Users.query.filter_by(username=username).first()
 
-        user = Users.query.filter_by(username=username).first()
+        # if user is not None and check_password_hash(user.password,password):
 
-        if user is not None and check_password_hash(user.password,password):
-
-            login_user(user)
-
+        #     login_user(user)
+    else:
+        errors = form_errors(form)
+        return jsonify(errors=errors)
 
 
 @app.route('/api/auth/logout',methods=['GET'])
@@ -62,7 +68,7 @@ def post():
         caption = form.caption.data
 
 
-    elif request.method == 'GET' and form.validate_on_submit():
+    elif request.method == 'GET':
         pass
 
 
@@ -137,4 +143,3 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port="8080")
-

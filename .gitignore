@@ -130,3 +130,9 @@ dmypy.json
 
 .vscode
 
+# node.js modules and files
+yarn*
+node_modules
+migrations
+package.json
+.eslintrc.json
