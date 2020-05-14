@@ -1,55 +1,122 @@
-@font-face {
-    font-family: 'Billabong';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Billabong'), url('../fonts/Billabong.woff') format('woff');
+/** photogram icon */
+
+#icon {
+    border-radius: 50%;
 }
+
+
+/** general */
 
 body {
-    padding-top: 5rem;
-    background-color: whitesmoke;
+    background-color: lightgray;
 }
 
-.billabong {
-    font-family: 'Billabong';
-    font-weight: bold;
-    font-size: 17pt;
-    letter-spacing: 1px;
-}
-
-.billabong-bold {
-    font-family: 'Billabong';
-    font-weight: bold;
-    font-size: 26pt;
-    letter-spacing: 1px;
-}
-
-.blue {
-    background-color: #3897f0;
-
-}
-
-.pd-8 {
-    padding-right: 8px;
+p {
+    font-weight: 500;
+    font-size: 16px;
 }
 
 
-.block-white {
-    background-color: white;
-    border-radius: 5px;
+/** Home page*/
+
+#home-head {
+    font-style: italic;
+}
+
+#home-image {
+    box-shadow: 0 4px 8px 0 rgb(0, 89, 255);
+}
+
+.home-contain {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 200px;
+    padding-bottom: 200px;
+}
+
+.home-contain1 {
     padding: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    margin: 10px;
-    text-align: left !important;
-    width: 22rem;
-    
-    
+    background-color: beige;
+    box-shadow: 0 4px 8px 0 rgb(0, 89, 255);
 }
-.center-div {
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    min-height: 90vh;
-  }
+
+.home-item {
+    display: flex;
+    margin: 0 auto;
+    width: 50%;
+}
+
+.home-item1 {
+    display: flex;
+    justify-content: space-around;
+}
+
+#btn1 {
+    background-color: rgb(152, 211, 63);
+    border-radius: 10px;
+    margin: 0 auto;
+    padding: 10px;
+    padding-left: 80px;
+    padding-right: 80px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+}
+
+#btn2 {
+    background-color: rgb(37, 37, 245);
+    border-radius: 10px;
+    margin: 0 auto;
+    padding: 10px;
+    padding-left: 80px;
+    padding-right: 80px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+}
+
+
+/** form pages  */
+
+#head {
+    margin: 0 auto;
+    width: 40%;
+}
+
+.myform {
+    margin: 0 auto;
+    width: 40%;
+    font-weight: 500;
+    background-color: whitesmoke;
+    border-top: solid 2px;
+    border-top-color: rgb(42, 56, 252);
+    padding: 35px;
+}
+
+.login {
+    margin: 0 auto;
+    width: 45%;
+    font-weight: 500;
+    background-color: whitesmoke;
+    border-top: solid 2px;
+    border-top-color: rgb(42, 56, 252);
+    padding: 35px;
+}
+
+#btn {
+    margin: 0 auto;
+    width: 100%;
+    background-color: rgb(123, 190, 22);
+    font-weight: bold;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid rgb(123, 190, 22);
+}
+
+input {
+    margin: 0 auto;
+    width: 100%;
+}
