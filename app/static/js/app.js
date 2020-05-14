@@ -35,34 +35,30 @@ Vue.component("app-header", {
 const Home = Vue.component("home", {
     template: `
 
+    <div>
+        <div  class="home-contain" >
 
-    <div  class="home-contain" >
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div>
-            <img  id="home-image" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" height="350"/>
-        </div>
-        <div class="home-contain1">
-            <div class="home-item">
-                <div>
-                    <img id="icon" src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png" />
-                </div>
-
-                <div id="home-head">
-                    <h1>Photogram</h1>
-                </div>
-            </div>
-            <hr>
             <div>
-                <p>Share photos of your favourite moments with friends, family and the world.</p>
+                <img  id="home-image" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" height="350"/>
             </div>
-            <div class="home-item1">
-                <router-link tag='button' id="btn1" :to="{name:'register'}" >Register</router-link>
-                <router-link tag="button" id="btn2" :to="{name:'login'} ">Login</router-link>
+            <div class="home-contain1">
+                <div class="home-item">
+                    <div>
+                        <img id="icon" src="https://thumbs.dreamstime.com/z/photo-camera-icon-splash-paint-vector-watercolor-illustration-82417992.jpg" height="70" />
+                    </div>
+
+                    <div id="home-head">
+                        <h1>Photogram</h1>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <p>Share photos of your favourite moments with friends, family and the world.</p>
+                </div>
+                <div class="home-item1">
+                    <router-link tag='button' id="btn1" :to="{name:'register'}" >Register</router-link>
+                    <router-link tag="button" id="btn2" :to="{name:'login'} ">Login</router-link>
+                </div>
             </div>
         </div>
 </div>
@@ -87,12 +83,9 @@ const NotFound = Vue.component("not-found", {
 // eslint-disable-next-line no-undef
 const Login = Vue.component("login", {
     template: `
+    <div >
     <div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <h1 id="head">Login</h1>
+        <h1 class="center-div" id="head">Login</h1>
         <br>
     <div class="login">
         <form @submit.prevent="loginUser" id="loginForm" class="" name="loginForm">
@@ -108,6 +101,7 @@ const Login = Vue.component("login", {
         <button type="submit" id="btn" class="btn btn-block btn-outline-danger">Login</button>
         </form>
         </div>
+    </div>
     </div>
     `,
     methods: {
@@ -142,13 +136,8 @@ const Login = Vue.component("login", {
 
 const Register = Vue.component("register", {
     template: `
-  <div class="form center-div">
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <h1 id="head">Register</h1>
+  <div >
+        <h1 class="center-div" id="head">Register</h1>
         <br>
 
     <div class="myform" >

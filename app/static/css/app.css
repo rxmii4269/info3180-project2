@@ -16,6 +16,12 @@ p {
     font-size: 16px;
 }
 
+.center-div {
+    position: absolute;
+    left: 30%;
+    top: 19%
+}
+
 
 /** Home page*/
 
@@ -93,6 +99,9 @@ p {
     border-top: solid 2px;
     border-top-color: rgb(42, 56, 252);
     padding: 35px;
+    position: absolute;
+    left: 30%;
+    top: 30%
 }
 
 .login {
@@ -103,6 +112,9 @@ p {
     border-top: solid 2px;
     border-top-color: rgb(42, 56, 252);
     padding: 35px;
+    position: absolute;
+    left: 30%;
+    top: 30%
 }
 
 #btn {
