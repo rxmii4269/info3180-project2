@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line no-undef
 Vue.component("app-header", {
-    template: `
+  template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <img id="icon" src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png" width="32" height="24" class="pd-8 d-inline-block align-top" loading="lazy" />
         <a class="navbar-brand" href="#">Photogram</a>
@@ -33,7 +33,7 @@ Vue.component("app-header", {
 
 // eslint-disable-next-line no-undef
 const Home = Vue.component("home", {
-    template: `
+  template: `
 
     <div>
         <div  class="home-contain" >
@@ -63,27 +63,48 @@ const Home = Vue.component("home", {
         </div>
 </div>
     `,
-    data: function() {
-        return {};
-    },
+  data: function () {
+    return {};
+  },
 });
 
 // eslint-disable-next-line no-undef
 const NotFound = Vue.component("not-found", {
-    template: `
+  template: `
     <div>
         <h1>404 - Not Found</h1>
     </div>
     `,
-    data: function() {
-        return {};
-    },
+  data: function () {
+    return {};
+  },
 });
 
 // eslint-disable-next-line no-undef
 const Login = Vue.component("login", {
+<<<<<<< HEAD
     template: `
     <div >
+=======
+  template: `
+<<<<<<< HEAD
+    <div class="form center-div">
+    <h6 class="ml-2 text-muted form-title">Login</h6>
+    <div class="block-white py-3">
+    <form @submit.prevent="loginUser" id="loginForm" class="p-2" name="loginForm">
+      <div class="form-group">
+        <label for="username" class="form-label font-weight-bold text-muted">Username</label>
+        <input class="form-control" type="text" placeholder="" name="username">
+        </div>
+        <div class="form-group">
+        <label for="password" class="form-label font-weight-bold text-muted">Password</label>
+        <input class="form-control" id="password" type="password" name="password" placeholder="">
+      </div>
+      <button type="submit" class="btn btn-block bg-green text-white font-weight-bold mt-5">Login</button>
+    </form>
+    </div>
+=======
+>>>>>>> e660357628dc496a81364ffeb203ef02a23c9044
     <div>
         <h1 class="center-div" id="head">Login</h1>
         <br>
@@ -101,129 +122,190 @@ const Login = Vue.component("login", {
         <button type="submit" id="btn" class="btn btn-block btn-outline-danger">Login</button>
         </form>
         </div>
+>>>>>>> ebf563fb0187c82a0ad789bfb5d4c11d036c1753
     </div>
     </div>
     `,
-    methods: {
-        loginUser: function() {
-            let loginForm = document.getElementById("loginForm");
-            let form_data = new FormData(loginForm);
-            // eslint-disable-next-line no-undef
-            payload = JSON.stringify(Object.fromEntries(form_data));
-            // eslint-disable-next-line no-undef
-            console.log(payload);
-            fetch("/api/auth/login", {
-                    method: "POST",
-                    body: payload,
-                    headers: {
-                        "X-CSRFToken": token,
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "same-origin",
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(jsonResponse) {
-                    console.log(jsonResponse);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        },
+  methods: {
+    loginUser: function () {
+      let loginForm = document.getElementById("loginForm");
+      let form_data = new FormData(loginForm);
+      // eslint-disable-next-line no-undef
+      payload = JSON.stringify(Object.fromEntries(form_data));
+      // eslint-disable-next-line no-undef
+      console.log(payload);
+      fetch("/api/auth/login", {
+          method: "POST",
+          body: payload,
+          headers: {
+            "X-CSRFToken": token,
+            "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+        })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
+  },
 });
 
 const Register = Vue.component("register", {
+<<<<<<< HEAD
     template: `
   <div >
         <h1 class="center-div" id="head">Register</h1>
         <br>
 
+=======
+  template: `
+<<<<<<< HEAD
+  
+  <div class="form justify-content-center centr-div ">
+  <h6 class="text-center mb-3 text-muted form-title">Register</h6>
+    <div class="block-white mx-auto">
+    
+=======
+  <div class="form center-div">
+        <h1 id="head">Register</h1>
+>>>>>>> e660357628dc496a81364ffeb203ef02a23c9044
     <div class="myform" >
+>>>>>>> ebf563fb0187c82a0ad789bfb5d4c11d036c1753
       <form @submit.prevent="registerUser" id="registerForm" class="" name="loginForm" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Username</label>
           <input type="text" class="form-control" id="username" name="username">
         </div>
         <div class="form-group">
-          <label for="username">Password</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Password</label>
           <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="form-group">
-          <label for="username">Firstname</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Firstname</label>
           <input type=text class="form-control" id="firstname" name="firstname">
         </div>
         <div class="form-group">
-          <label for="lastname">Lastname</label>
+          <label for="lastname" class="form-label font-weight-bold text-muted">Lastname</label>
           <input type="text" class="form-control" id="lastname" name="lastname">
         </div>
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email" class="form-label font-weight-bold text-muted">Email</label>
           <input type="email" class="form-control" id="email" name="email">
         </div>
         <div class="form-group">
-          <label for="location">Location</label>
+          <label for="location" class="form-label font-weight-bold text-muted">Location</label>
           <input type="text" class="form-control" id="location" name="location">
         </div>
         <div class="form-group">
-          <label for="biography">Biography</label>
-          <textarea rows="8" cols="46" class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
+<<<<<<< HEAD
+          <label for="biography" class="form-label font-weight-bold text-muted">Biography</label>
+          <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
         </div>
         <div class="input-group form-group mb-3 my-3">
           <div class="custom-file">
             <input aria-describedby="photo" type="file" id="photo" class="custom-file-input form-control-file" name="profile_photo">
-            <label class="custom-file-label" for="photo" >Photo</label>
+            <label class="custom-file-label form-label font-weight-bold text-muted" for="photo" >Photo</label>
           </div>
         </div>
 
+        <button class="btn form-control bg-green text-white font-weight-bold">Register</button>
+=======
+          <label for="biography">Biography</label>
+          <textarea rows="8" cols="46" class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
+        </div>
+        <div class=" form-group ">
+            <label for="photo">Photo</label>
+            <input aria-describedby="photo" type="file" id="photo" class="form-control-file" name="profile_photo">
+            
+        </div>
+
         <button id="btn" class="btn form-control btn-success">Register</button>
+>>>>>>> ebf563fb0187c82a0ad789bfb5d4c11d036c1753
       </form>
 
     </div>
   </div>
   `,
-    methods: {
-        registerUser: function() {
-            let registerForm = document.getElementById("registerForm");
-            let form_data = new FormData(registerForm);
-            payload = JSON.stringify(Object.fromEntries(form_data));
-            console.log(form_data.keys())
-            fetch("/api/users/register", {
-                    method: "POST",
-                    body: form_data,
-                    headers: {
-                        "X-CSRFToken": token,
-                        "Content-Type": "multipart/form-data",
-                    },
-                    credentials: "same-origin",
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(jsonResponse) {
-                    console.log(jsonResponse);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+  methods: {
+    registerUser: function () {
+      form_data = new FormData();
+      let username = $("#username").val();
+      let password = $("#password").val();
+      let firstname = $("#firstname").val();
+      let lastname = $("#lastname").val();
+      let email = $("#email").val();
+      let location = $("#locaton").val();
+      let biography = $("#biography").val();
+      let profile_photo = $("#photo")[0].files[0].name;
+      console.log(`photo is ${profile_photo}`);
+      payload = JSON.stringify(Object.fromEntries(form_data));
+      console.log(payload);
+      fetch("/api/users/register", {
+<<<<<<< HEAD
+          method: "POST",
+          body: form_data,
+          headers: {
+            "X-CSRFToken": token,
+            "Content-Type": "multipart/form-data",
+          },
+          credentials: "same-origin",
+        })
+=======
+        method: "POST",
+        body: payload,
+        headers: {
+          "X-CSRFToken": token,
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
         },
+        credentials: "same-origin",
+      })
+>>>>>>> ebf563fb0187c82a0ad789bfb5d4c11d036c1753
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
+  },
 });
 
 const router = new VueRouter({
-    mode: "history",
-    routes: [
-        { path: "/", component: Home },
-        { name: "login", path: "/login", component: Login },
-        { name: "register", path: "/register", component: Register },
+  mode: "history",
+  routes: [{
+      path: "/",
+      component: Home
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: Login
+    },
+    {
+      name: "register",
+      path: "/register",
+      component: Register
+    },
 
-        { path: "*", component: NotFound },
-    ],
+    {
+      path: "*",
+      component: NotFound
+    },
+  ],
 });
 
 // eslint-disable-next-line no-unused-vars
 let app = new Vue({
-    el: "#app",
-    router,
+  el: "#app",
+  router,
 });

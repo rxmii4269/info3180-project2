@@ -4,8 +4,19 @@
     border-radius: 50%;
 }
 
+<<<<<<< HEAD
+:root {
+    --green: #9ACD32;
+    /* --green: #79B16C; */
+}
+
+.bg-green {
+    background-color: var(--green);
+}
+=======
 
 /** general */
+>>>>>>> ebf563fb0187c82a0ad789bfb5d4c11d036c1753
 
 body {
     background-color: lightgray;
@@ -42,6 +53,31 @@ p {
 
 .home-contain1 {
     padding: 20px;
+<<<<<<< HEAD
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    text-align: left !important;
+    width: 22rem;
+
+}
+
+.center-div {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    min-height: 90vh;
+}
+
+/* FOR LOGIN FORM */
+.form-title {
+    font-size: 1.2rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+=======
     background-color: beige;
     box-shadow: 0 4px 8px 0 rgb(0, 89, 255);
 }
@@ -131,4 +167,5 @@ p {
 input {
     margin: 0 auto;
     width: 100%;
+>>>>>>> ebf563fb0187c82a0ad789bfb5d4c11d036c1753
 }
