@@ -24,8 +24,8 @@ def register():
         location = form.location.data
         biography = form.biography.data
         photo = form.photo.data
-        filename = secure_filename(photo.filename)
-        print(filename)
+        # filename = secure_filename(photo.filename)
+        print(photo)
         return jsonify({"message":"User successfully registered"})
     else:
         errors = form_errors(form)
