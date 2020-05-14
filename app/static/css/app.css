@@ -1,3 +1,28 @@
+@font-face {
+    font-family: 'Billabong';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Billabong'), url('../fonts/Billabong.woff') format('woff');
+
+}
+/* photogram font */
+.billabong {
+    font-family: 'Billabong';
+    font-weight: bold;
+    font-size: 17pt;
+    letter-spacing: 1px;
+}
+
+.billabong-bold {
+    font-family: 'Billabong';
+    font-weight: bold;
+    font-size: 26pt;
+    letter-spacing: 1px;
+}
+
+.blue {
+    background-color: #3897f0;
+}
 /** photogram icon */
 
 #icon {

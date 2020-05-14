@@ -5,7 +5,7 @@ Vue.component("app-header", {
   template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <img id="icon" src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png" width="32" height="24" class="pd-8 d-inline-block align-top" loading="lazy" />
-        <a class="navbar-brand" href="#">Photogram</a>
+        <a class="navbar-brand billabong" href="#">Photogram</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -53,7 +53,7 @@ const Home = Vue.component("home", {
                 </div>
 
                 <div id="home-head">
-                    <h1>Photogram</h1>
+                    <h1 class="billabong-bold">Photogram</h1>
                 </div>
             </div>
             <hr>
@@ -96,13 +96,13 @@ const Login = Vue.component("login", {
         <br>
     <div class="login">
         <form @submit.prevent="loginUser" id="loginForm" class="" name="loginForm">
-        <div>
+        <div class="form-group">
             <label for="username">Username</label>
-            <input  type="text"  name="username">
+            <input class="form-control"  type="text"  name="username">
         </div>
-        <div>
+        <div class="form-group">
             <label for="password">Password</label>
-            <input id="password" type="password" name="password" >
+            <input class="form-control" id="password" type="password" name="password" >
         </div>
         <br>
         <button type="submit" id="btn" class="btn btn-block btn-outline-danger">Login</button>
@@ -145,7 +145,7 @@ const Register = Vue.component("register", {
   <div class="form center-div">
         <h1 id="head">Register</h1>
     <div class="myform" >
-      <form @submit.prevent="registerUser" id="registerForm" class="" name="loginForm" enctype="multipart/form-data">
+      <form @submit.prevent="registerUser" id="registerForm" class="" name="registerForm">
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" class="form-control" id="username" name="username">
@@ -172,7 +172,7 @@ const Register = Vue.component("register", {
         </div>
         <div class="form-group">
           <label for="biography">Biography</label>
-          <textarea rows="8" cols="46" class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
+          <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
         </div>
         <div class=" form-group ">
             <label for="photo">Photo</label>
@@ -188,7 +188,8 @@ const Register = Vue.component("register", {
   `,
   methods: {
     registerUser: function () {
-      form_data = new FormData();
+      let registerForm = document.getElementById('registerForm');
+      let form_data = new FormData(registerForm);
       let username = $("#username").val();
       let password = $("#password").val();
       let firstname = $("#firstname").val();
@@ -196,17 +197,15 @@ const Register = Vue.component("register", {
       let email = $("#email").val();
       let location = $("#locaton").val();
       let biography = $("#biography").val();
-      let profile_photo = $("#photo")[0].files[0].name;
-      console.log(`photo is ${profile_photo}`);
-      payload = JSON.stringify(Object.fromEntries(form_data));
-      console.log(payload);
+      // let profile_photo = $("#photo")[0].files[0].name;
+      // console.log(`photo is ${profile_photo}`);
+      console.log(form_data)
       fetch("/api/users/register", {
         method: "POST",
-        body: payload,
+        body: form_data,
         headers: {
           "X-CSRFToken": token,
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
+          // "Content-Type": "multipart/form-data",
         },
         credentials: "same-origin",
       })
@@ -221,6 +220,9 @@ const Register = Vue.component("register", {
         });
     },
   },
+  data: function(){
+    return {}
+  }
 });
 
 const router = new VueRouter({
