@@ -5,6 +5,15 @@
     src: local('Billabong'), url('../fonts/Billabong.woff') format('woff');
 }
 
+:root {
+    --green: #9ACD32;
+    /* --green: #79B16C; */
+}
+
+.bg-green {
+    background-color: var(--green);
+}
+
 body {
     padding-top: 5rem;
     background-color: whitesmoke;
@@ -42,9 +51,10 @@ body {
     margin: 10px;
     text-align: left !important;
     width: 22rem;
-    
-    
+
+
 }
+
 .center-div {
     position: absolute;
     top: 60%;
@@ -52,4 +62,13 @@ body {
     margin-right: -50%;
     transform: translate(-50%, -50%);
     min-height: 90vh;
-  }
+}
+
+/* FOR LOGIN FORM */
+.login-title {
+    font-size: 1.2rem;
+}
+
+.login-label {
+    font-size: 0.9rem;
+}

@@ -68,18 +68,18 @@ const NotFound = Vue.component("not-found", {
 const Login = Vue.component("login", {
   template: `
     <div class="form center-div">
-    <h6>Login</h6>
+    <h6 class="ml-2 text-muted login-title">Login</h6>
     <div class="block-white py-3">
-    <form @submit.prevent="loginUser" id="loginForm" class="" name="loginForm">
+    <form @submit.prevent="loginUser" id="loginForm" class="p-2" name="loginForm">
       <div class="form-group">
-        <label for="username">Username</label>
-        <input class="form-control" type="text" placeholder="Username" name="username">
+        <label for="username" class="login-label font-weight-bold text-muted">Username</label>
+        <input class="form-control" type="text" placeholder="" name="username">
         </div>
         <div class="form-group">
-        <label for="password">Password</label>
-        <input class="form-control" id="password" type="password" name="password" placeholder="Password">
+        <label for="password" class="login-label font-weight-bold text-muted">Password</label>
+        <input class="form-control" id="password" type="password" name="password" placeholder="">
       </div>
-      <button type="submit" class="btn btn-block btn-outline-danger">Login</button>
+      <button type="submit" class="btn btn-block bg-green text-white mt-5">Login</button>
     </form>
     </div>
     </div>
@@ -93,14 +93,14 @@ const Login = Vue.component("login", {
       // eslint-disable-next-line no-undef
       console.log(payload);
       fetch("/api/auth/login", {
-        method: "POST",
-        body: payload,
-        headers: {
-          "X-CSRFToken": token,
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-      })
+          method: "POST",
+          body: payload,
+          headers: {
+            "X-CSRFToken": token,
+            "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+        })
         .then(function (response) {
           return response.json();
         })
@@ -169,14 +169,14 @@ const Register = Vue.component("register", {
       payload = JSON.stringify(Object.fromEntries(form_data));
       console.log(form_data.keys())
       fetch("/api/users/register", {
-        method: "POST",
-        body: form_data,
-        headers: {
-          "X-CSRFToken": token,
-          "Content-Type": "multipart/form-data",
-        },
-        credentials: "same-origin",
-      })
+          method: "POST",
+          body: form_data,
+          headers: {
+            "X-CSRFToken": token,
+            "Content-Type": "multipart/form-data",
+          },
+          credentials: "same-origin",
+        })
         .then(function (response) {
           return response.json();
         })
@@ -192,12 +192,25 @@ const Register = Vue.component("register", {
 
 const router = new VueRouter({
   mode: "history",
-  routes: [
-    { path: "/", component: Home },
-    { name: "login", path: "/login", component: Login },
-    { name: "register", path: "/register", component: Register },
+  routes: [{
+      path: "/",
+      component: Home
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: Login
+    },
+    {
+      name: "register",
+      path: "/register",
+      component: Register
+    },
 
-    { path: "*", component: NotFound },
+    {
+      path: "*",
+      component: NotFound
+    },
   ],
 });
 
