@@ -52,7 +52,6 @@ body {
     text-align: left !important;
     width: 22rem;
 
-
 }
 
 .center-div {
@@ -65,10 +64,10 @@ body {
 }
 
 /* FOR LOGIN FORM */
-.login-title {
+.form-title {
     font-size: 1.2rem;
 }
 
-.login-label {
+.form-label {
     font-size: 0.9rem;
 }

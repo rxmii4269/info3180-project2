@@ -68,18 +68,18 @@ const NotFound = Vue.component("not-found", {
 const Login = Vue.component("login", {
   template: `
     <div class="form center-div">
-    <h6 class="ml-2 text-muted login-title">Login</h6>
+    <h6 class="ml-2 text-muted form-title">Login</h6>
     <div class="block-white py-3">
     <form @submit.prevent="loginUser" id="loginForm" class="p-2" name="loginForm">
       <div class="form-group">
-        <label for="username" class="login-label font-weight-bold text-muted">Username</label>
+        <label for="username" class="form-label font-weight-bold text-muted">Username</label>
         <input class="form-control" type="text" placeholder="" name="username">
         </div>
         <div class="form-group">
-        <label for="password" class="login-label font-weight-bold text-muted">Password</label>
+        <label for="password" class="form-label font-weight-bold text-muted">Password</label>
         <input class="form-control" id="password" type="password" name="password" placeholder="">
       </div>
-      <button type="submit" class="btn btn-block bg-green text-white mt-5">Login</button>
+      <button type="submit" class="btn btn-block bg-green text-white font-weight-bold mt-5">Login</button>
     </form>
     </div>
     </div>
@@ -116,47 +116,48 @@ const Login = Vue.component("login", {
 
 const Register = Vue.component("register", {
   template: `
-  <div class="form center-div">
-  <h6>Register</h6>
-    <div class="block-white">
+  
+  <div class="form justify-content-center centr-div ">
+  <h6 class="text-center mb-3 text-muted form-title">Register</h6>
+    <div class="block-white mx-auto">
     
       <form @submit.prevent="registerUser" id="registerForm" class="" name="loginForm" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Username</label>
           <input type="text" class="form-control" id="username" name="username">
         </div>
         <div class="form-group">
-          <label for="username">Password</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Password</label>
           <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="form-group">
-          <label for="username">Firstname</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Firstname</label>
           <input type=text class="form-control" id="firstname" name="firstname">
         </div>
         <div class="form-group">
-          <label for="lastname">Lastname</label>
+          <label for="lastname" class="form-label font-weight-bold text-muted">Lastname</label>
           <input type="text" class="form-control" id="lastname" name="lastname">
         </div>
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email" class="form-label font-weight-bold text-muted">Email</label>
           <input type="email" class="form-control" id="email" name="email">
         </div>
         <div class="form-group">
-          <label for="location">Location</label>
+          <label for="location" class="form-label font-weight-bold text-muted">Location</label>
           <input type="text" class="form-control" id="location" name="location">
         </div>
         <div class="form-group">
-          <label for="biography">Biography</label>
+          <label for="biography" class="form-label font-weight-bold text-muted">Biography</label>
           <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
         </div>
         <div class="input-group form-group mb-3 my-3">
           <div class="custom-file">
             <input aria-describedby="photo" type="file" id="photo" class="custom-file-input form-control-file" name="profile_photo">
-            <label class="custom-file-label" for="photo" >Photo</label>
+            <label class="custom-file-label form-label font-weight-bold text-muted" for="photo" >Photo</label>
           </div>
         </div>
 
-        <button class="btn form-control btn-success">Register</button>
+        <button class="btn form-control bg-green text-white font-weight-bold">Register</button>
       </form>
       
     </div>
