@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line no-undef
 Vue.component("app-header", {
-    template: `
+  template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <img id="icon" src= "https://previews.123rf.com/images/ukususha/ukususha1612/ukususha161200171/67282542-photo-camera-icon-vector-watercolor-splash-illustration.jpg" height="60" />
         <a class="navbar-brand billabong" href="#">Photogram</a>
@@ -33,7 +33,7 @@ Vue.component("app-header", {
 
 // eslint-disable-next-line no-undef
 const Home = Vue.component("home", {
-    template: `
+  template: `
 
     <div >
         <div  class="home-contain" >
@@ -63,27 +63,26 @@ const Home = Vue.component("home", {
         </div>
 </div>
     `,
-    data: function() {
-        return {};
-    },
+  data: function () {
+    return {};
+  },
 });
 
 // eslint-disable-next-line no-undef
 const NotFound = Vue.component("not-found", {
-    template: `
+  template: `
     <div>
         <h1>404 - Not Found</h1>
     </div>
     `,
-    data: function() {
-        return {};
-    },
+  data: function () {
+    return {};
+  },
 });
 
 // eslint-disable-next-line no-undef
 const Login = Vue.component("login", {
-
-    template: `
+  template: `
     <div>
         <h1 class="center-div" id="head">Login</h1>
         <br>
@@ -105,43 +104,42 @@ const Login = Vue.component("login", {
     </div>
     </div>
     `,
-    methods: {
-        loginUser: function() {
-            let loginForm = document.getElementById("loginForm");
-            let form_data = new FormData(loginForm);
-            // eslint-disable-next-line no-undef
-            payload = JSON.stringify(Object.fromEntries(form_data));
-            // eslint-disable-next-line no-undef
-            console.log(payload);
-            fetch("/api/auth/login", {
-                    method: "POST",
-                    body: payload,
-                    headers: {
-                        "X-CSRFToken": token,
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "same-origin",
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(jsonResponse) {
-                    console.log(jsonResponse);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+  methods: {
+    loginUser: function () {
+      let loginForm = document.getElementById("loginForm");
+      let form_data = new FormData(loginForm);
+      // eslint-disable-next-line no-undef
+      payload = JSON.stringify(Object.fromEntries(form_data));
+      // eslint-disable-next-line no-undef
+      console.log(payload);
+      fetch("/api/auth/login", {
+        method: "POST",
+        body: payload,
+        headers: {
+          "X-CSRFToken": token,
+          "Content-Type": "application/json",
         },
+        credentials: "same-origin",
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
+  },
 });
 
-const Register = Vue.component("register", {
-
-    template: `
+const Register = Vue.component("register-form", {
+  template: `
     <div>
         <h1 class="center-div" id="head">Register</h1>
         <div class="myform" >
-        <form   @submit.prevent="registerUser" id="registerForm" class="" name="registerForm">
+        <form   @submit.prevent="registerUser" id="registerForm" name="registerForm">
             <div class="form-group">
             <label for="username" class="form-label font-weight-bold text-muted">Username</label>
             <input type="text" class="form-control" id="username" name="username">
@@ -171,83 +169,71 @@ const Register = Vue.component("register", {
             <label for="biography" class="form-label font-weight-bold text-muted">Biography</label>
             <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
             </div>
-            <div class="input-group form-group mb-3 my-3">
-            <div class="custom-file">
-                <input aria-describedby="photo" type="file" id="photo" class="custom-file-input form-control-file" name="profile_photo">
-                <label class="custom-file-label form-label font-weight-bold text-muted" for="photo" >Photo</label>
+            <div class="form-group mb-3 my-3">
+                <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
+                <input type="file" id="photo" class="form-control-file" name="profile_photo">
             </div>
-            </div>
-            <button id="btn" class="btn form-control btn-success">Register</button>
+            <button type="submit" id="btn" class="btn btn-success">Register</button>
         </form>
 
     </div>
   </div>
   `,
-    methods: {
-        registerUser: function() {
-            let registerForm = document.getElementById('registerForm');
-            let form_data = new FormData(registerForm);
-            let username = $("#username").val();
-            let password = $("#password").val();
-            let firstname = $("#firstname").val();
-            let lastname = $("#lastname").val();
-            let email = $("#email").val();
-            let location = $("#locaton").val();
-            let biography = $("#biography").val();
-            // let profile_photo = $("#photo")[0].files[0].name;
-            // console.log(`photo is ${profile_photo}`);
-            console.log(form_data)
-            fetch("/api/users/register", {
-                    method: "POST",
-                    body: form_data,
-                    headers: {
-                        "X-CSRFToken": token,
-                        // "Content-Type": "multipart/form-data",
-                    },
-                    credentials: "same-origin",
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(jsonResponse) {
-                    console.log(jsonResponse);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+  methods: {
+    registerUser: function () {
+      let RegisterForm = document.getElementById("registerForm");
+      let form_data = new FormData(RegisterForm);
+      fetch("/api/users/register", {
+        method: "POST",
+        body: form_data,
+        headers: {
+          "X-CSRFToken": token
         },
+        credentials: "same-origin",
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
-    data: function() {
-        return {}
-    }
+  },
+  data: function () {
+    return {};
+  },
 });
 
 const router = new VueRouter({
-    mode: "history",
-    routes: [{
-            path: "/",
-            component: Home
-        },
-        {
-            name: "login",
-            path: "/login",
-            component: Login
-        },
-        {
-            name: "register",
-            path: "/register",
-            component: Register
-        },
+  mode: "history",
+  routes: [
+    {
+      path: "/",
+      component: Home,
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: Login,
+    },
+    {
+      name: "register",
+      path: "/register",
+      component: Register,
+    },
 
-        {
-            path: "*",
-            component: NotFound
-        },
-    ],
+    {
+      path: "*",
+      component: NotFound,
+    },
+  ],
 });
 
 // eslint-disable-next-line no-unused-vars
 let app = new Vue({
-    el: "#app",
-    router,
+  el: "#app",
+  router,
 });

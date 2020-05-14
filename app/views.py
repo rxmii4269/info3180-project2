@@ -4,11 +4,10 @@ import sys
 import jwt
 from flask import redirect, render_template, request, url_for
 from flask.json import jsonify
-from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
-from app import app, db, login_manager
+from app import app, db
 from app.forms import LoginForm, RegisterForm, UploadForm
 from app.models import Follows, Likes, Posts, Users
 
@@ -25,11 +24,13 @@ def register():
         location = form.location.data
         biography = form.biography.data
         photo = form.photo.data
-        print(photo)
-        return jsonify(message={"message":"User successfully registered"})
+        filename = secure_filename(photo.filename)
+        print(filename)
+        return jsonify({"message":"User successfully registered"})
     else:
         errors = form_errors(form)
         return jsonify(errors=errors)
+
 
 @app.route('/api/auth/login',methods=['POST'])
 def login():
@@ -44,22 +45,20 @@ def login():
         # if user is not None and check_password_hash(user.password,password):
 
         #     login_user(user)
+
     else:
         errors = form_errors(form)
         return jsonify(errors=errors)
 
 
 @app.route('/api/auth/logout',methods=['GET'])
-@login_required
 def logout():
-    logout_user()
     return redirect(url_for('home'))
 
 
 
 
 @app.route('/api/users/<int:user_id>/posts',methods=['GET','POST'])
-@login_required
 def post():
     form = UploadForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -75,20 +74,17 @@ def post():
 
 
 @app.route('/api/users/<int:user_id>/follow',methods=['POST'])
-@login_required
 def follow():
     pass
 
 
 
 @app.route('/api/posts',methods=['GET'])
-@login_required
 def posts():
     pass
 
 
 @app.route('/api/post/<int:post_id>/like',methods=['POST'])
-@login_required
 def like_post():
     pass
 
@@ -116,11 +112,6 @@ def form_errors(form):
 
     return error_messages
 
-
-
-@login_manager.user_loader
-def load_user(id):
-    return Users.query.get(int(id))
 
 
 
