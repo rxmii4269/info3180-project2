@@ -120,7 +120,7 @@ const Register = Vue.component("register", {
   <h6>Register</h6>
     <div class="block-white">
     
-      <form @submit.prevent="registerUser" id="registerForm" class="" name="loginForm" enctype="multipart/form-data">
+      <form @submit.prevent="registerUser" method="post" id="registerForm" class="" name="registerForm" enctype="multipart/form-data">
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" class="form-control" id="username" name="username">
@@ -149,14 +149,13 @@ const Register = Vue.component("register", {
           <label for="biography">Biography</label>
           <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
         </div>
-        <div class="input-group form-group mb-3 my-3">
-          <div class="custom-file">
-            <input aria-describedby="photo" type="file" id="photo" class="custom-file-input form-control-file" name="profile_photo">
-            <label class="custom-file-label" for="photo" >Photo</label>
-          </div>
+        <div class=" form-group ">
+            <label for="photo">Photo</label>
+            <input aria-describedby="photo" type="file" id="photo" class="form-control-file" name="profile_photo">
+            
         </div>
 
-        <button class="btn form-control btn-success">Register</button>
+        <button form="registerForm" type="submit" class="btn form-control btn-success">Register</button>
       </form>
       
     </div>
@@ -164,16 +163,25 @@ const Register = Vue.component("register", {
   `,
   methods: {
     registerUser: function () {
-      let registerForm = document.getElementById("registerForm");
-      let form_data = new FormData(registerForm);
+      form_data = new FormData();
+      let username = $("#username").val();
+      let password = $("#password").val();
+      let firstname = $("#firstname").val();
+      let lastname = $("#lastname").val();
+      let email = $("#email").val();
+      let location = $("#locaton").val();
+      let biography = $("#biography").val();
+      let profile_photo = $("#photo")[0].files[0].name;
+      console.log(`photo is ${profile_photo}`);
       payload = JSON.stringify(Object.fromEntries(form_data));
-      console.log(form_data.keys())
+      console.log(payload);
       fetch("/api/users/register", {
         method: "POST",
-        body: form_data,
+        body: payload,
         headers: {
           "X-CSRFToken": token,
           "Content-Type": "multipart/form-data",
+          Accept: "application/json",
         },
         credentials: "same-origin",
       })
