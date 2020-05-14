@@ -47,7 +47,7 @@ p {
 
 .center-div {
     position: absolute;
-    left: 30%;
+    left: 35%;
     top: 18%;
 }
 
@@ -129,7 +129,7 @@ p {
     border-top-color: rgb(42, 56, 252);
     padding: 35px;
     position: absolute;
-    left: 30%;
+    left: 35%;
     top: 30%;
 }
 
@@ -142,7 +142,7 @@ p {
     border-top-color: rgb(42, 56, 252);
     padding: 35px;
     position: absolute;
-    left: 30%;
+    left: 35%;
     top: 30%;
 }
 
@@ -157,7 +157,52 @@ p {
     border: 1px solid rgb(123, 190, 22);
 }
 
+
+/*Profile*/
+
 input {
     margin: 0 auto;
     width: 100%;
+}
+
+.info {
+    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.10);
+}
+
+.info h1 {
+    font-size: 1.2rem;
+}
+
+.info p {
+    font-size: 0.9rem;
+}
+
+.line-h {
+    line-height: 0.3;
+}
+
+.center-section {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 20%;
+}
+
+
+/*explore*/
+
+.explore-div {
+    display: flex;
+}
+
+.card {
+    border-radius: 0px;
+}
+
+p {
+    font-size: 0.9rem;
+}
+
+.card-header h3 {
+    font-size: 1rem;
 }
