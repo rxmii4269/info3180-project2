@@ -35,34 +35,30 @@ Vue.component("app-header", {
 const Home = Vue.component("home", {
   template: `
 
+    <div>
+        <div  class="home-contain" >
 
-    <div  class="home-contain" >
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div>
-            <img  id="home-image" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" height="350"/>
-        </div>
-        <div class="home-contain1">
-            <div class="home-item">
-                <div>
-                    <img id="icon" src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png" />
-                </div>
-
-                <div id="home-head">
-                    <h1 class="billabong-bold">Photogram</h1>
-                </div>
-            </div>
-            <hr>
             <div>
-                <p>Share photos of your favourite moments with friends, family and the world.</p>
+                <img  id="home-image" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" height="350"/>
             </div>
-            <div class="home-item1">
-                <router-link tag='button' id="btn1" :to="{name:'register'}" >Register</router-link>
-                <router-link tag="button" id="btn2" :to="{name:'login'} ">Login</router-link>
+            <div class="home-contain1">
+                <div class="home-item">
+                    <div>
+                        <img id="icon" src="https://thumbs.dreamstime.com/z/photo-camera-icon-splash-paint-vector-watercolor-illustration-82417992.jpg" height="70" />
+                    </div>
+
+                    <div id="home-head">
+                        <h1>Photogram</h1>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <p>Share photos of your favourite moments with friends, family and the world.</p>
+                </div>
+                <div class="home-item1">
+                    <router-link tag='button' id="btn1" :to="{name:'register'}" >Register</router-link>
+                    <router-link tag="button" id="btn2" :to="{name:'login'} ">Login</router-link>
+                </div>
             </div>
         </div>
 </div>
@@ -86,13 +82,10 @@ const NotFound = Vue.component("not-found", {
 
 // eslint-disable-next-line no-undef
 const Login = Vue.component("login", {
+
   template: `
     <div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <h1 id="head">Login</h1>
+        <h1 class="center-div" id="head">Login</h1>
         <br>
     <div class="login">
         <form @submit.prevent="loginUser" id="loginForm" class="" name="loginForm">
@@ -108,6 +101,8 @@ const Login = Vue.component("login", {
         <button type="submit" id="btn" class="btn btn-block btn-outline-danger">Login</button>
         </form>
         </div>
+
+    </div>
     </div>
     `,
   methods: {
@@ -119,14 +114,14 @@ const Login = Vue.component("login", {
       // eslint-disable-next-line no-undef
       console.log(payload);
       fetch("/api/auth/login", {
-        method: "POST",
-        body: payload,
-        headers: {
-          "X-CSRFToken": token,
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-      })
+          method: "POST",
+          body: payload,
+          headers: {
+            "X-CSRFToken": token,
+            "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+        })
         .then(function (response) {
           return response.json();
         })
@@ -141,36 +136,56 @@ const Login = Vue.component("login", {
 });
 
 const Register = Vue.component("register", {
-  template: `
-  <div class="form center-div">
-        <h1 id="head">Register</h1>
+
+    template: `
+  <div >
+        <h1 class="center-div" id="head">Register</h1>
+        <br>
+  
+  <div class="form justify-content-center centr-div ">
+  <h6 class="text-center mb-3 text-muted form-title">Register</h6>
+    <div class="block-white mx-auto">
+    
     <div class="myform" >
       <form @submit.prevent="registerUser" id="registerForm" class="" name="registerForm">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Username</label>
           <input type="text" class="form-control" id="username" name="username">
         </div>
         <div class="form-group">
-          <label for="username">Password</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Password</label>
           <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="form-group">
-          <label for="username">Firstname</label>
+          <label for="username" class="form-label font-weight-bold text-muted">Firstname</label>
           <input type=text class="form-control" id="firstname" name="firstname">
         </div>
         <div class="form-group">
-          <label for="lastname">Lastname</label>
+          <label for="lastname" class="form-label font-weight-bold text-muted">Lastname</label>
           <input type="text" class="form-control" id="lastname" name="lastname">
         </div>
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email" class="form-label font-weight-bold text-muted">Email</label>
           <input type="email" class="form-control" id="email" name="email">
         </div>
         <div class="form-group">
-          <label for="location">Location</label>
+          <label for="location" class="form-label font-weight-bold text-muted">Location</label>
           <input type="text" class="form-control" id="location" name="location">
         </div>
         <div class="form-group">
+
+          <label for="biography" class="form-label font-weight-bold text-muted">Biography</label>
+          <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
+        </div>
+        <div class="input-group form-group mb-3 my-3">
+          <div class="custom-file">
+            <input aria-describedby="photo" type="file" id="photo" class="custom-file-input form-control-file" name="profile_photo">
+            <label class="custom-file-label form-label font-weight-bold text-muted" for="photo" >Photo</label>
+          </div>
+        </div>
+
+        <button class="btn form-control bg-green text-white font-weight-bold">Register</button>
+
           <label for="biography">Biography</label>
           <textarea class="form-control" name="biography"  id="biography" cols=40, rows=2></textarea>
         </div>
@@ -227,12 +242,25 @@ const Register = Vue.component("register", {
 
 const router = new VueRouter({
   mode: "history",
-  routes: [
-    { path: "/", component: Home },
-    { name: "login", path: "/login", component: Login },
-    { name: "register", path: "/register", component: Register },
+  routes: [{
+      path: "/",
+      component: Home
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: Login
+    },
+    {
+      name: "register",
+      path: "/register",
+      component: Register
+    },
 
-    { path: "*", component: NotFound },
+    {
+      path: "*",
+      component: NotFound
+    },
   ],
 });
 
