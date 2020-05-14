@@ -1,0 +1,14 @@
+{
+  "name": "photogram",
+  "version": "0.0.1",
+  "description": "instagram clone",
+  "main": "app.js",
+  "repository": "git@github.com:rxmii4269/info3180-project2.git",
+  "author": "Romaine Murray <romainemurray6@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "eslint": "^7.0.0",
+    "eslint-plugin-vue": "^6.2.2"
+  }
+}
