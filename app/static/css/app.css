@@ -3,9 +3,11 @@
     font-style: normal;
     font-weight: normal;
     src: local('Billabong'), url('../fonts/Billabong.woff') format('woff');
-
 }
+
+
 /* photogram font */
+
 .billabong {
     font-family: 'Billabong';
     font-weight: bold;
@@ -23,6 +25,8 @@
 .blue {
     background-color: #3897f0;
 }
+
+
 /** photogram icon */
 
 #icon {
@@ -39,6 +43,12 @@ body {
 p {
     font-weight: 500;
     font-size: 16px;
+}
+
+.center-div {
+    position: absolute;
+    left: 30%;
+    top: 18%;
 }
 
 
@@ -112,22 +122,28 @@ p {
 
 .myform {
     margin: 0 auto;
-    width: 40%;
+    width: 30%;
     font-weight: 500;
     background-color: whitesmoke;
     border-top: solid 2px;
     border-top-color: rgb(42, 56, 252);
     padding: 35px;
+    position: absolute;
+    left: 30%;
+    top: 30%;
 }
 
 .login {
     margin: 0 auto;
-    width: 45%;
+    width: 30%;
     font-weight: 500;
     background-color: whitesmoke;
     border-top: solid 2px;
     border-top-color: rgb(42, 56, 252);
     padding: 35px;
+    position: absolute;
+    left: 30%;
+    top: 30%;
 }
 
 #btn {
