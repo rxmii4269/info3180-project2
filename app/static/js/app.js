@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line no-undef
 Vue.component("app-header", {
-  template: `
+    template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <img id="icon" src= "https://previews.123rf.com/images/ukususha/ukususha1612/ukususha161200171/67282542-photo-camera-icon-vector-watercolor-splash-illustration.jpg" height="60" />
         <a class="navbar-brand billabong" href="#">Photogram</a>
@@ -16,10 +16,10 @@ Vue.component("app-header", {
                 <router-link class="nav-link" to="/" >Home <span class="sr-only">(current)</span></router-link>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#">Explore</a>
+                <router-link class="nav-link" to="/explore">Explore</router-link>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#">My Profile</a>
+                <router-link class="nav-link" to="/profile">My Profile</router-link>
             </li>
             <li class="nav-item active">
                 <router-link class='nav-link' to="/login">Login</router-link>
@@ -33,7 +33,7 @@ Vue.component("app-header", {
 
 // eslint-disable-next-line no-undef
 const Home = Vue.component("home", {
-  template: `
+    template: `
 
     <div >
         <div  class="home-contain" >
@@ -63,26 +63,26 @@ const Home = Vue.component("home", {
         </div>
 </div>
     `,
-  data: function () {
-    return {};
-  },
+    data: function() {
+        return {};
+    },
 });
 
 // eslint-disable-next-line no-undef
 const NotFound = Vue.component("not-found", {
-  template: `
+    template: `
     <div>
         <h1>404 - Not Found</h1>
     </div>
     `,
-  data: function () {
-    return {};
-  },
+    data: function() {
+        return {};
+    },
 });
 
 // eslint-disable-next-line no-undef
 const Login = Vue.component("login", {
-  template: `
+    template: `
     <div>
         <h1 class="center-div" id="head">Login</h1>
         <br>
@@ -104,38 +104,38 @@ const Login = Vue.component("login", {
     </div>
     </div>
     `,
-  methods: {
-    loginUser: function () {
-      let loginForm = document.getElementById("loginForm");
-      let form_data = new FormData(loginForm);
-      // eslint-disable-next-line no-undef
-      payload = JSON.stringify(Object.fromEntries(form_data));
-      // eslint-disable-next-line no-undef
-      console.log(payload);
-      fetch("/api/auth/login", {
-        method: "POST",
-        body: payload,
-        headers: {
-          "X-CSRFToken": token,
-          "Content-Type": "application/json",
+    methods: {
+        loginUser: function() {
+            let loginForm = document.getElementById("loginForm");
+            let form_data = new FormData(loginForm);
+            // eslint-disable-next-line no-undef
+            payload = JSON.stringify(Object.fromEntries(form_data));
+            // eslint-disable-next-line no-undef
+            console.log(payload);
+            fetch("/api/auth/login", {
+                    method: "POST",
+                    body: payload,
+                    headers: {
+                        "X-CSRFToken": token,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "same-origin",
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(jsonResponse) {
+                    console.log(jsonResponse);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
         },
-        credentials: "same-origin",
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (jsonResponse) {
-          console.log(jsonResponse);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
-  },
 });
 
 const Register = Vue.component("register-form", {
-  template: `
+    template: `
     <div>
         <h1 class="center-div" id="head">Register</h1>
         <div class="myform" >
@@ -179,61 +179,169 @@ const Register = Vue.component("register-form", {
     </div>
   </div>
   `,
-  methods: {
-    registerUser: function () {
-      let RegisterForm = document.getElementById("registerForm");
-      let form_data = new FormData(RegisterForm);
-      fetch("/api/users/register", {
-        method: "POST",
-        body: form_data,
-        headers: {
-          "X-CSRFToken": token
+    methods: {
+        registerUser: function() {
+            let RegisterForm = document.getElementById("registerForm");
+            let form_data = new FormData(RegisterForm);
+            fetch("/api/users/register", {
+                    method: "POST",
+                    body: form_data,
+                    headers: {
+                        "X-CSRFToken": token
+                    },
+                    credentials: "same-origin",
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(jsonResponse) {
+                    console.log(jsonResponse);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
         },
-        credentials: "same-origin",
-      })
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (jsonResponse) {
-          console.log(jsonResponse);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
-  },
-  data: function () {
-    return {};
-  },
+    data: function() {
+        return {};
+    },
 });
 
-const router = new VueRouter({
-  mode: "history",
-  routes: [
-    {
-      path: "/",
-      component: Home,
-    },
-    {
-      name: "login",
-      path: "/login",
-      component: Login,
-    },
-    {
-      name: "register",
-      path: "/register",
-      component: Register,
-    },
+const profile = Vue.component("profile", {
+    template: `
+    <div>
+        <section class="center-section">
+        <div class="container-fluid">
+            <div class="row justify-content-beween bg-white border info align-items-center py-2 pr-0 pl-2">
+                <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="" style="height:120px;">
+                <div class="col col-lg-7 col-md-5 col-sm-5">
+                    <h1 class="mb-4 font-weight-bold">Rosa Diaz</h1>
+                    <p class="line-h text-muted">Kingston,Jamaica</p>
+                    <p class="line-h text-muted">Member since January 2018</p>
+                    <p class="text-muted">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+                </div>
+                <div class="col-lg-3 justify-content-end float-right">
+                    <div class="row justify-content-end">
+                        <div>
+                            <p class="font-weight-bold text-center ">6</p>
+                            <p class="text-muted font-weight-bold line-h">Posts</p>
+                        </div>
+                        <div class="ml-3">
+                            <p class="font-weight-bold text-center">6</p>
+                            <p class="text-muted font-weight-bold line-h">Followers</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end ml-auto mt-3">
+                        <button class="btn btn-primary text-white btnblock" style="width:120px;">Follow</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    {
-      path: "*",
-      component: NotFound,
+        <div class="row justify-content-center mt-3">
+            <div class="col col-lg-4">
+
+                <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="img-fluid" style="height:15rem; width: 99%;">
+            </div>
+            <div class="col col-lg-4">
+                <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="img-fluid" style="height:15rem; width: 99%;">
+            </div>
+            <div class="col col-lg-4">
+                <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="img-fluid" style="height:15rem; width: 99%;">
+            </div>
+        </div>
+
+    </section>
+</div>
+    `,
+    data: function() {
+        return {};
     },
-  ],
+});
+
+const explore = Vue.component("explore", {
+    template: `
+    <div class="explore-div">
+        <div>
+            <section class="center-section">
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div class="col col-lg-5 col-md-7">
+                            <div class="card ">
+                                <div class="card-header bg-white d-flex align-items-center">
+                                    <i class="far fa-user"></i>
+                                    <h3 class="ml-2">username</h3>
+                                </div>
+                                <img class="" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="Card image cap" class="img-fluid" style="height:18rem;">
+                                <div class="card-body py-3 px-2">
+                                    <p class="card-text text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis laborum nulla, quisquam nisi non odit deserunt voluptate maxime velit facere. Quas temporibus vel a, dicta corrupti eveniet est at iste! Reprehenderit, pariatur?
+                                        Reiciendis ducimus aliquam, fugit aspernatur inventore quae labore eos, illum exercitationem suscipit consequatur mollitia atque consequuntur dolores excepturi.</p>
+                                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                                </div>
+                                <div class="card-footer d-flex justify-content-between bg-white font-wight-bold border-0 mt-2">
+                                    <div>
+                                        <span>
+                                            <i class="far fa-heart"></i>
+                                            10 Likes
+                                        </span>
+                                    </div>
+                                    <div>24 April 2018</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <br>
+        <div class="row justify-content-center" >
+        <div class="center-section"  >
+            <button id="btn2">New Post</button>
+        </div>
+    </div>
+    `,
+    data: function() {
+        return {};
+    },
+});
+
+
+const router = new VueRouter({
+    mode: "history",
+    routes: [{
+            path: "/",
+            component: Home
+        },
+        {
+            name: "login",
+            path: "/login",
+            component: Login
+        },
+        {
+            name: "register",
+            path: "/register",
+            component: Register
+        },
+        {
+            name: "profile",
+            path: "/profile",
+            component: profile
+        },
+        {
+            name: "explore",
+            path: "/explore",
+            component: explore
+        },
+
+        {
+            path: "*",
+            component: NotFound,
+        },
+    ],
 });
 
 // eslint-disable-next-line no-unused-vars
 let app = new Vue({
-  el: "#app",
-  router,
+    el: "#app",
+    router,
 });
