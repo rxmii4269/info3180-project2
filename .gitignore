@@ -133,7 +133,6 @@ dmypy.json
 # node.js modules and files
 yarn*
 node_modules
-migrations
 .eslintrc.json
 
 #ignore uploads folder
