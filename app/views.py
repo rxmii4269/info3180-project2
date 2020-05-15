@@ -45,14 +45,20 @@ def login():
     
     if request.method == 'POST' and form.validate_on_submit():
         print(request.json)
-        return jsonify(message=[{"message":"hi"}])
+        
+        username = request.json['username']
+        password = request.json['password']
 
-        # user = Users.query.filter_by(username=username).first()
-
-        # if user is not None and check_password_hash(user.password,password):
-
-        #     login_user(user)
-
+        user = Users.query.filter_by(username=username).first()
+        print(user)
+        if user is not None and check_password_hash(user.password,password):
+            payload = {"id":user.id,"name":user.username}
+            print(payload)
+            token = jwt.encode(payload,app.config["SECRET_KEY"],algorithm="HS512").decode('UTF-8')
+            message = "User successfully logged in"
+            return jsonify(token=token,message=message)
+        else:
+            return jsonify(errors={"error":"Username or Password is incorrect"})
     else:
         errors = form_errors(form)
         return jsonify(errors=errors)
