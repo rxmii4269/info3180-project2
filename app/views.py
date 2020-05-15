@@ -1,5 +1,7 @@
 
+import os
 import sys
+from datetime import datetime
 
 import jwt
 from flask import redirect, render_template, request, url_for
@@ -15,7 +17,7 @@ from app.models import Follows, Likes, Posts, Users
 @app.route('/api/users/register',methods=['POST'])
 def register():
     form = RegisterForm()
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate_on_submit():
         username = form.username.data
         password = form.password.data
         firstname = form.firstname.data
@@ -23,10 +25,15 @@ def register():
         email = form.email.data
         location = form.location.data
         biography = form.biography.data
-        photo = form.photo.data
-        # filename = secure_filename(photo.filename)
-        print(photo)
-        return jsonify({"message":"User successfully registered"})
+        photo = form.profile_photo.data
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        joined_on = datetime.today().strftime('%Y-%m-%d')
+        hashed_pw= generate_password_hash(password,method='pbkdf2:sha512',salt_length=10)
+        user=Users(username,hashed_pw,firstname,lastname,email,location,biography,filename,joined_on)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"message":"User successfully registered"}),201
     else:
         errors = form_errors(form)
         return jsonify(errors=errors)

@@ -13,7 +13,7 @@ class RegisterForm(FlaskForm):
     email = TextField('Email',validators=[DataRequired(),Email()])
     location = TextField('Location',validators=[DataRequired(),InputRequired()])
     biography = TextAreaField('Biography',validators=[DataRequired()])
-    photo = FileField('Photo',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png'],'Images Only!')])
+    profile_photo = FileField('Photo',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png'],'Images Only!')])
 
 
 
