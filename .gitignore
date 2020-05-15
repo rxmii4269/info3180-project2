@@ -135,3 +135,6 @@ yarn*
 node_modules
 migrations
 .eslintrc.json
+
+#ignore uploads folder
+uploads/

@@ -171,7 +171,7 @@ const Register = Vue.component("register-form", {
             </div>
             <div class="form-group mb-3 my-3">
                 <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
-                <input type="file" id="photo" class="form-control-file" name="profile_photo">
+                <input class="form-control-file" type="file" id="photo" name="profile_photo">
             </div>
             <button type="submit" id="btn" class="btn btn-success">Register</button>
         </form>
