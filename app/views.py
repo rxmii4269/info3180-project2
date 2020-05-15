@@ -71,17 +71,25 @@ def logout():
 
 
 @app.route('/api/users/<int:user_id>/posts',methods=['GET','POST'])
-def post():
+def post(user_id):
     form = UploadForm()
     if request.method == 'POST' and form.validate_on_submit():
 
         photo = form.photo.data
         caption = form.caption.data
-
+        return "POST Request"
 
     elif request.method == 'GET':
-        pass
+        return "Get Request"
+    else:
+        return "Form did not validate"
 
+
+@app.route("/api/users/<user_id>",methods=['GET'])
+def user(user_id):
+    if request.method == 'GET':
+        print(request.headers)
+        return request.headers["X-Csrftoken"]
 
 
 
