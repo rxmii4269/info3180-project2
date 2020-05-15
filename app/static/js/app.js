@@ -289,15 +289,16 @@ const explore = Vue.component("explore", {
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <button id="btn2">New Post</button>
+                        </div>
                     </div>
                 </div>
             </section>
         </div>
         <br>
-        <div class="row justify-content-center" >
-        <div class="center-section"  >
-            <button id="btn2">New Post</button>
-        </div>
+        <div class="column" >
+
     </div>
     `,
     data: function() {
