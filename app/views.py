@@ -52,8 +52,7 @@ def login():
         user = Users.query.filter_by(username=username).first()
         print(user)
         if user is not None and check_password_hash(user.password,password):
-            payload = {"id":user.id,"name":user.username}
-            print(payload)
+            payload = {"id":user.id,"name":user.username,"iat":datetime.utcnow()}
             token = jwt.encode(payload,app.config["SECRET_KEY"],algorithm="HS512").decode('UTF-8')
             message = "User successfully logged in"
             return jsonify(token=token,message=message)
