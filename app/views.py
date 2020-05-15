@@ -9,7 +9,7 @@ from flask.json import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
-from app import app, db
+from app import app,db
 from app.forms import LoginForm, RegisterForm, UploadForm
 from app.models import Follows, Likes, Posts, Users
 
@@ -74,13 +74,28 @@ def logout():
 def post(user_id):
     form = UploadForm()
     if request.method == 'POST' and form.validate_on_submit():
-
         photo = form.photo.data
         caption = form.caption.data
-        return "POST Request"
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        created_on = datetime.today().strftime('%Y-%m-%d')
+        post =Posts(user_id,photo,caption,created_on)
+        db.session.add(post)
+        db.session.commit()
+        return jsonify({"message": "Successfully created a new post"}),201
 
     elif request.method == 'GET':
-        return "Get Request"
+        allpost=[]
+        posts = Posts.query.filter_by(user_id=user_id).all()
+        for post in posts:
+            payload={"user_id":post.user_id,
+            "photo":post.photo,
+            "caption":post.caption,
+            "created_on":post.created_on}
+            allpost.append(payload)
+            print(payload)
+        
+        return jsonify(allpost),201
     else:
         return "Form did not validate"
 
