@@ -9,6 +9,7 @@ app.config['SECRET_KEY']="\xb8\xbb\xb2\xcaR\x91\\\xe6F\xe8\xe7Q\x0f^(!W\xe9F\xfc
 app.config['SQLALCHEMY_DATABASE_URI']= "postgresql://project1:project1@localhost/photogram"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= True
 app.config['UPLOAD_FOLDER'] = './app/static/uploads'
+app.config['SESSION_COOKIE_SECURE']=False
 
 
 db = SQLAlchemy(app)
