@@ -88,14 +88,16 @@ def post(user_id):
         allpost=[]
         posts = Posts.query.filter_by(user_id=user_id).all()
         for post in posts:
-            payload={"user_id":post.user_id,
+            payload={"id":post.id,
+            "user_id":post.user_id,
             "photo":post.photo,
             "caption":post.caption,
             "created_on":post.created_on}
             allpost.append(payload)
             print(payload)
         
-        return jsonify(allpost),201
+        
+        return jsonify({"posts":allpost}),201
     else:
         return "Form did not validate"
 
@@ -116,6 +118,23 @@ def follow():
 
 @app.route('/api/posts',methods=['GET'])
 def posts():
+    allpost=[]
+    if request.method=="GET":
+        posts = Posts.query.all()
+        for post in posts:
+            likes=len(Likes.query.filter(post_id=post.id).all())
+            payload={"id":post.id,
+            "user_id":post.user_id,
+            "photo":post.photo,
+            "caption":post.caption,
+            "created_on":post.created_on,
+            "Likes":likes}
+
+            allpost.append(payload)
+                
+        return jsonify({"Posts":allpost}),201
+    else:
+        return jsonify({"message": "Invalid Fequest"}),201
     pass
 
 
