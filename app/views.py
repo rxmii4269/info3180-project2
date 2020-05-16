@@ -46,13 +46,12 @@ def login():
     form = LoginForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        print(request.json)
+        
 
         username = request.json['username']
         password = request.json['password']
 
         user = Users.query.filter_by(username=username).first()
-        print(user)
         if user is not None and check_password_hash(user.password, password):
             issued_date = datetime.utcnow()
             exp_date = issued_date + timedelta(minutes=15)
@@ -104,7 +103,6 @@ def post(user_id):
                        "caption": post.caption,
                        "created_on": post.created_on}
             allpost.append(payload)
-            print(payload)
         return jsonify({"posts": allpost}), 200
     else:
         return "Form did not validate"
@@ -171,7 +169,7 @@ def like_post():
         db.session.commit()
         likes = Likes.query.filter_by(post_id).count()
         message = [{"message":"Post liked","likes":likes}]
-        return jsonify(message)
+        return jsonify(message),201
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
