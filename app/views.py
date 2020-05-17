@@ -1,21 +1,23 @@
-
 import os
-import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import jwt
+<<<<<<< HEAD
 from flask import redirect, render_template, request, url_for,flash
 from flask_login import login_user, logout_user, current_user, login_required
+=======
+from flask import render_template, request
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
 from flask.json import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
-from app import app,db
+from app import app, db
 from app.forms import LoginForm, RegisterForm, UploadForm
 from app.models import Follows, Likes, Posts, Users
 
 
-@app.route('/api/users/register',methods=['POST'])
+@app.route('/api/users/register', methods=['POST'])
 def register():
     form = RegisterForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -28,99 +30,144 @@ def register():
         biography = form.biography.data
         photo = form.profile_photo.data
         filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         joined_on = datetime.today().strftime('%Y-%m-%d')
-        hashed_pw= generate_password_hash(password,method='pbkdf2:sha512',salt_length=10)
-        user=Users(username,hashed_pw,firstname,lastname,email,location,biography,filename,joined_on)
+        hashed_pw = generate_password_hash(
+            password, method='pbkdf2:sha512', salt_length=10)
+        user = Users(username, hashed_pw, firstname, lastname,
+                     email, location, biography, filename, joined_on)
         db.session.add(user)
         db.session.commit()
-        return jsonify({"message":"User successfully registered"}),201
+        return jsonify({"message": "User successfully registered"}), 201
     else:
         errors = form_errors(form)
         return jsonify(errors=errors)
 
 
-@app.route('/api/auth/login',methods=['POST'])
+@app.route('/api/auth/login', methods=['POST'])
 def login():
     form = LoginForm()
 
     if request.method == 'POST' and form.validate_on_submit():
+<<<<<<< HEAD
         print(request.json)
+=======
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
 
         username = request.json['username']
         password = request.json['password']
 
         user = Users.query.filter_by(username=username).first()
-        print(user)
-        if user is not None and check_password_hash(user.password,password):
-            payload = {"id":user.id,"name":user.username,"iat":datetime.utcnow()}
-            token = jwt.encode(payload,app.config["SECRET_KEY"],algorithm="HS512").decode('UTF-8')
+        if user is not None and check_password_hash(user.password, password):
+            issued_date = datetime.utcnow()
+            exp_date = issued_date + timedelta(minutes=15)
+            payload = {"id": user.id, "name": user.username,
+                       "iat": issued_date, "exp": exp_date}
+            token = jwt.encode(
+                payload, app.config["SECRET_KEY"], algorithm="HS512").decode('UTF-8')
             message = "User successfully logged in"
-            return jsonify(token=token,message=message)
+            return jsonify(token=token, message=message)
         else:
-            return jsonify(errors={"error":"Username or Password is incorrect"})
+            return jsonify(errors={"error": "Username or Password is incorrect"})
     else:
         errors = form_errors(form)
         return jsonify(errors=errors)
 
 
+<<<<<<< HEAD
 
 @app.route('/api/auth/logout',methods=['GET'])
+=======
+@app.route('/api/auth/logout', methods=['POST'])
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
 def logout():
-    return redirect(url_for('home'))
+    if request.method == 'POST' and request.json == {}:
+        return jsonify({"message": "User successfully logged out"})
 
+<<<<<<< HEAD
 @app.route('/api/users/<int:user_id>/posts',methods=['GET','POST'])
+=======
+
+@app.route('/api/users/<int:user_id>/posts', methods=['GET', 'POST'])
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
 def post(user_id):
     form = UploadForm()
     if request.method == 'POST' and form.validate_on_submit():
+        token = request.headers["Authorization"][7:]
+        jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         photo = form.photo.data
-        caption = form.caption.data
+        caption = request.json['description']
         filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         created_on = datetime.today().strftime('%Y-%m-%d')
-        post =Posts(user_id,photo,caption,created_on)
+        post = Posts(user_id, photo, caption, created_on)
         db.session.add(post)
         db.session.commit()
-        return jsonify({"message": "Successfully created a new post"}),201
+        return jsonify({"message": "Successfully created a new post"}), 201
 
     elif request.method == 'GET':
-        allpost=[]
+        token = request.headers["Authorization"][7:]
+        decoded = jwt.decode(
+            token, app.config['SECRET_KEY'], algorithms="HS512")
+        allpost = []
         posts = Posts.query.filter_by(user_id=user_id).all()
         for post in posts:
-            payload={"id":post.id,
-            "user_id":post.user_id,
-            "photo":post.photo,
-            "caption":post.caption,
-            "created_on":post.created_on}
+            payload = {"id": post.id,
+                       "user_id": post.user_id,
+                       "photo": post.photo,
+                       "caption": post.caption,
+                       "created_on": post.created_on}
             allpost.append(payload)
+<<<<<<< HEAD
             print(payload)
 
 
         return jsonify({"posts":allpost}),201
+=======
+        return jsonify({"posts": allpost}), 200
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
     else:
         return "Form did not validate"
 
 
-@app.route("/api/users/<user_id>",methods=['GET'])
+@app.route("/api/users/<user_id>", methods=['GET'])
 def user(user_id):
-    if request.method == 'GET':
-        print(request.headers)
-        return request.headers["X-Csrftoken"]
+    if request.method == 'GET' and request.json == {}:
+        token = request.headers["Authorization"][7:]
+        decoded = jwt.decode(
+            token, app.config['SECRET_KEY'], algorithms="HS512")
+        user = Users.query.filter_by(user_id=user_id).first()
+        user_info = [{"id": user.id, "username": user.username, "firstname": user.firstname, "lastname": user.lastname,
+                      "email": user.email, "location": user.location, "profile_photo": user.profile_photo,
+                      "joined_on": user.joined_on}]
+        return jsonify(user_info)
 
 
+@app.route('/api/users/<int:user_id>/follow', methods=['POST', 'GET'])
+def follow(user_id):
+    if request.method == 'POST':
+        token = request.headers["Authorization"][7:]
+        decoded = jwt.decode(
+            token, app.config['SECRET_KEY'], algorithms="HS512")
+        user_id = request.json['user_id']
+        follower_id = request.json['follower_id']
+        follow = Follows(user_id, follower_id)
+        db.session.add(follow)
+        db.session.commit()
+        message = [{"message": "You are following that user."}]
+        return jsonify(message), 201
+    elif request.method == "GET":
+        followers = Follows.query.filter_by(user_id).count()
+        return jsonify([{"followers": followers}]), 201
 
-@app.route('/api/users/<int:user_id>/follow',methods=['POST'])
-def follow():
-    pass
 
-
-
-@app.route('/api/posts',methods=['GET'])
+@app.route('/api/posts', methods=['GET'])
 def posts():
-    allpost=[]
-    if request.method=="GET":
+    allpost = []
+    if request.method == "GET" and request.json == {}:
         posts = Posts.query.all()
         for post in posts:
+<<<<<<< HEAD
             likes=len(Likes.query.filter(post_id=post.id).all())
             payload={"id":post.id,
             "user_id":post.user_id,
@@ -134,36 +181,65 @@ def posts():
             allpost.append(payload)
 
         return jsonify({"Posts":allpost}),201
+=======
+            likes = len(Likes.query.filter(post_id=post.id).all())
+            payload = {"id": post.id,
+                       "user_id": post.user_id,
+                       "photo": post.photo,
+                       "caption": post.caption,
+                       "created_on": post.created_on,
+                       "Likes": likes}
+
+            allpost.append(payload)
+
+        return jsonify({"Posts": allpost}), 201
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
     else:
-        return jsonify({"message": "Invalid Fequest"}),201
+        return jsonify({"message": "Invalid Request"}), 201
     pass
 
 
-@app.route('/api/post/<int:post_id>/like',methods=['POST'])
+@app.route('/api/post/<int:post_id>/like', methods=['POST'])
 def like_post():
+<<<<<<< HEAD
     pass
 
 @app.route('/',defaults={'path':''})
+=======
+    if request.method == "POST":
+        user_id = request.json['user_id']
+        post_id = request.json['post_id']
+        post = Likes(user_id, post_id)
+        db.session.add(post)
+        db.session.commit()
+        likes = Likes.query.filter_by(post_id).count()
+        message = [{"message": "Post liked", "likes": likes}]
+        return jsonify(message), 201
+
+
+@app.route('/', defaults={'path': ''})
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
 @app.route('/<path:path>')
 def index(path):
     return render_template('index.html')
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 34689a888447acdf401818c5c36fc60f20dd0e5d
 def form_errors(form):
     error_messages = []
     """Collects form errors"""
     for field, errors in form.errors.items():
         for error in errors:
             message = u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                )
+                getattr(form, field).label.text,
+                error
+            )
             error_messages.append(message)
 
     return error_messages
-
-
 
 
 @app.after_request
