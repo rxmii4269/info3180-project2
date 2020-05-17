@@ -4,7 +4,8 @@ import sys
 from datetime import datetime
 
 import jwt
-from flask import redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for,flash
+from flask_login import login_user, logout_user, current_user, login_required
 from flask.json import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -42,10 +43,10 @@ def register():
 @app.route('/api/auth/login',methods=['POST'])
 def login():
     form = LoginForm()
-    
+
     if request.method == 'POST' and form.validate_on_submit():
         print(request.json)
-        
+
         username = request.json['username']
         password = request.json['password']
 
@@ -63,12 +64,10 @@ def login():
         return jsonify(errors=errors)
 
 
+
 @app.route('/api/auth/logout',methods=['GET'])
 def logout():
     return redirect(url_for('home'))
-
-
-
 
 @app.route('/api/users/<int:user_id>/posts',methods=['GET','POST'])
 def post(user_id):
@@ -95,8 +94,8 @@ def post(user_id):
             "created_on":post.created_on}
             allpost.append(payload)
             print(payload)
-        
-        
+
+
         return jsonify({"posts":allpost}),201
     else:
         return "Form did not validate"
@@ -125,13 +124,15 @@ def posts():
             likes=len(Likes.query.filter(post_id=post.id).all())
             payload={"id":post.id,
             "user_id":post.user_id,
+            "profile_photo": os.path.join(app.config['UPLOAD_FOLDER'],user.profile_photo),
+            "username": user.username,
             "photo":post.photo,
             "caption":post.caption,
             "created_on":post.created_on,
             "Likes":likes}
 
             allpost.append(payload)
-                
+
         return jsonify({"Posts":allpost}),201
     else:
         return jsonify({"message": "Invalid Fequest"}),201
@@ -142,14 +143,10 @@ def posts():
 def like_post():
     pass
 
-
-
-
 @app.route('/',defaults={'path':''})
 @app.route('/<path:path>')
 def index(path):
     return render_template('index.html')
-
 
 
 

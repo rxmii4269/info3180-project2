@@ -35,7 +35,10 @@ Vue.component("app-header", {
 const Home = Vue.component("home", {
     template: `
 
-    <div >
+    <div>
+        <div class="alert alert-success col-md-12" role="alert" v-if='success'>
+            {{ notifs }}
+        </div>
         <div  class="home-contain" >
 
             <div>
@@ -63,6 +66,7 @@ const Home = Vue.component("home", {
         </div>
 </div>
     `,
+    props: ['notifs', 'success'],
     data: function() {
         return {};
     },
@@ -84,6 +88,13 @@ const NotFound = Vue.component("not-found", {
 const Login = Vue.component("login", {
     template: `
     <div>
+        <div class="alert alert-danger" role="alert" v-if='error'>
+            {{ message }}
+        </div>
+        <div v-else>
+          <div class="alert alert-success" role="alert" v-if='success'>
+            {{ notifs }}
+          </div>
         <h1 class="center-div" id="head">Login</h1>
         <br>
     <div class="login">
@@ -126,17 +137,40 @@ const Login = Vue.component("login", {
                 })
                 .then(function(jsonResponse) {
                     console.log(jsonResponse);
+                    if (jsonResponse.hasOwnProperty('token')) {
+                        let jwt_token = jsonResponse.token;
+                        let id = jsonResponse.user_id;
+
+                        localStorage.setItem('token', jwt_token);
+                        localStorage.setItem('current_user', id);
+
+                        router.push('/explore');
+                    } else {
+                        self.error = true;
+                        self.message = jsonResponse.error;
+                    }
                 })
                 .catch(function(error) {
+                    self.error = false;
                     console.log(error);
                 });
-        },
+        }
     },
+    props: ['notifs', 'success'],
+    data: function() {
+        return {
+            error: false,
+            message: ''
+        };
+    }
 });
+
+
 
 const Register = Vue.component("register-form", {
     template: `
     <div>
+
         <h1 class="center-div" id="head">Register</h1>
         <div class="myform" >
         <form   @submit.prevent="registerUser" id="registerForm" name="registerForm">
@@ -181,6 +215,7 @@ const Register = Vue.component("register-form", {
   `,
     methods: {
         registerUser: function() {
+            let self = this;
             let RegisterForm = document.getElementById("registerForm");
             let form_data = new FormData(RegisterForm);
             fetch("/api/users/register", {
@@ -196,15 +231,29 @@ const Register = Vue.component("register-form", {
                 })
                 .then(function(jsonResponse) {
                     console.log(jsonResponse);
+                    if (jsonResponse.hasOwnProperty("error")) {
+                        self.error = true;
+                        self.message = jsonResponse.error;
+                        this.success = false;
+                    } else {
+                        if (jsonResponse.hasOwnProperty("message")) {
+
+                            router.push({ name: 'login', params: { notifs: jsonResponse.getmessage, success: true } });
+                        }
+                    }
                 })
                 .catch(function(error) {
                     console.log(error);
                 });
-        },
+        }
     },
     data: function() {
-        return {};
-    },
+        return {
+            error: false,
+            message: ''
+        };
+
+    }
 });
 
 const profile = Vue.component("profile", {
@@ -263,29 +312,28 @@ const explore = Vue.component("explore", {
     template: `
     <div class="explore-div">
         <div>
-            <section class="center-section">
+            <section   class="center-section">
                 <div class="container-fluid">
                     <div class="row justify-content-center">
                         <div class="col col-lg-5 col-md-7">
                             <div class="card ">
                                 <div class="card-header bg-white d-flex align-items-center">
-                                    <i class="far fa-user"></i>
-                                    <h3 class="ml-2">username</h3>
+                                    <img  v-bind:src=post.profile_photo style="width:40px"/>
+                                    <h3 class="ml-2">{{post.username}}</h3>
                                 </div>
-                                <img class="" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="Card image cap" class="img-fluid" style="height:18rem;">
+                                <img class="" v-bind:src=post.photo alt="Card image cap" class="img-fluid" style="height:18rem;">
                                 <div class="card-body py-3 px-2">
-                                    <p class="card-text text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis laborum nulla, quisquam nisi non odit deserunt voluptate maxime velit facere. Quas temporibus vel a, dicta corrupti eveniet est at iste! Reprehenderit, pariatur?
-                                        Reiciendis ducimus aliquam, fugit aspernatur inventore quae labore eos, illum exercitationem suscipit consequatur mollitia atque consequuntur dolores excepturi.</p>
+                                    <p class="card-text text-justify">{{post.caption}}</p>
                                     <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
                                 </div>
                                 <div class="card-footer d-flex justify-content-between bg-white font-wight-bold border-0 mt-2">
                                     <div>
                                         <span>
-                                            <i class="far fa-heart"></i>
-                                            10 Likes
+                                            <i class="far fa-heart" ></i>
+                                            {{post.likes}} Likes
                                         </span>
                                     </div>
-                                    <div>24 April 2018</div>
+                                    <div>{{post.created_on}}</div>
                                 </div>
                             </div>
                         </div>
@@ -296,15 +344,37 @@ const explore = Vue.component("explore", {
                 </div>
             </section>
         </div>
-        <br>
-        <div class="column" >
+
+
 
     </div>
     `,
+    created: function() {
+        self = this;
+
+        fetch("/api/posts", {
+            method: "GET",
+            headers: {
+
+                'X-CSRFToken': token
+            },
+            credentials: 'same-origin'
+        }).then(function(response) {
+            return response.json();
+        }).then(function(jsonResponse) {
+            console.log(jsonResponse)
+        }).catch(function(error) {
+            console.log(error);
+        });
+    },
     data: function() {
-        return {};
+        return {
+            post: [],
+            postFlag: false
+        };
     },
 });
+
 
 
 const router = new VueRouter({
