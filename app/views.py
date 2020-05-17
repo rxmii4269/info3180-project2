@@ -1,10 +1,8 @@
-
 import os
-import sys
 from datetime import datetime, timedelta
 
 import jwt
-from flask import redirect, render_template, request, url_for
+from flask import render_template, request
 from flask.json import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -46,7 +44,6 @@ def login():
     form = LoginForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        
 
         username = request.json['username']
         password = request.json['password']
@@ -116,8 +113,10 @@ def user(user_id):
             token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(user_id=user_id).first()
         user_info = [{"id": user.id, "username": user.username, "firstname": user.firstname, "lastname": user.lastname,
-                    "email": user.email, "location": user.location, "profile_photo": user.profile_photo, "joined_on": user.joined_on}]
+                      "email": user.email, "location": user.location, "profile_photo": user.profile_photo,
+                      "joined_on": user.joined_on}]
         return jsonify(user_info)
+
 
 @app.route('/api/users/<int:user_id>/follow', methods=['POST', 'GET'])
 def follow(user_id):
@@ -140,7 +139,7 @@ def follow(user_id):
 @app.route('/api/posts', methods=['GET'])
 def posts():
     allpost = []
-    if request.method == "GET" and request.json=={}:
+    if request.method == "GET" and request.json == {}:
         posts = Posts.query.all()
         for post in posts:
             likes = len(Likes.query.filter(post_id=post.id).all())
@@ -161,21 +160,21 @@ def posts():
 
 @app.route('/api/post/<int:post_id>/like', methods=['POST'])
 def like_post():
-    if request.method=="POST":
+    if request.method == "POST":
         user_id = request.json['user_id']
         post_id = request.json['post_id']
-        post = Likes(user_id,post_id)
+        post = Likes(user_id, post_id)
         db.session.add(post)
         db.session.commit()
         likes = Likes.query.filter_by(post_id).count()
-        message = [{"message":"Post liked","likes":likes}]
-        return jsonify(message),201
+        message = [{"message": "Post liked", "likes": likes}]
+        return jsonify(message), 201
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
     return render_template('index.html')
-
 
 
 def form_errors(form):
@@ -190,7 +189,6 @@ def form_errors(form):
             error_messages.append(message)
 
     return error_messages
-
 
 
 @app.after_request

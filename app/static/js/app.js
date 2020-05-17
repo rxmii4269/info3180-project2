@@ -109,7 +109,7 @@ const Login = Vue.component("login", {
             let loginForm = document.getElementById("loginForm");
             let form_data = new FormData(loginForm);
             // eslint-disable-next-line no-undef
-            payload = JSON.stringify(Object.fromEntries(form_data));
+            let payload = JSON.stringify(Object.fromEntries(form_data));
             // eslint-disable-next-line no-undef
             console.log(payload);
             fetch("/api/auth/login", {
@@ -212,7 +212,7 @@ const profile = Vue.component("profile", {
     <div>
         <section class="center-section">
         <div class="container-fluid">
-            <div class="row justify-content-beween bg-white border info align-items-center py-2 pr-0 pl-2">
+            <div class="row justify-content-between bg-white border info align-items-center py-2 pr-0 pl-2">
                 <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="" style="height:120px;">
                 <div class="col col-lg-7 col-md-5 col-sm-5">
                     <h1 class="mb-4 font-weight-bold">Rosa Diaz</h1>
