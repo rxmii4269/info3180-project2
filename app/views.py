@@ -45,8 +45,6 @@ def login():
     form = LoginForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        print(request.json)
-
         username = request.json['username']
         password = request.json['password']
 
@@ -69,7 +67,7 @@ def login():
 
 @app.route('/api/auth/logout', methods=['POST'])
 def logout():
-    if request.method == 'POST' and request.json == {}:
+    if request.method == 'POST':
         return jsonify({"message": "User successfully logged out"})
 
 
@@ -103,7 +101,6 @@ def post(user_id):
                     "caption": post.caption,
                     "created_on": post.created_on}
             allpost.append(payload)
-            print(payload)
 
 
         return jsonify({"posts":allpost}),201
@@ -114,7 +111,7 @@ def post(user_id):
 
 @app.route("/api/users/<user_id>", methods=['GET'])
 def user(user_id):
-    if request.method == 'GET' and request.json == {}:
+    if request.method == 'GET':
         token = request.headers["Authorization"][7:]
         decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(user_id=user_id).first()
@@ -151,7 +148,7 @@ def follow(user_id):
 @app.route('/api/posts', methods=['GET'])
 def posts():
     allpost = []
-    if request.method == "GET" and request.json == {}:
+    if request.method == "GET":
         posts = Posts.query.all()
         for post in posts:
 
