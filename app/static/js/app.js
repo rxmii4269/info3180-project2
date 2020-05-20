@@ -19,16 +19,25 @@ Vue.component("app-header", {
                 <router-link class="nav-link" to="/explore">Explore</router-link>
             </li>
             <li class="nav-item active">
-                <router-link class="nav-link" to="/profile">My Profile</router-link>
+                <router-link class="nav-link" to="/profile" >My Profile</router-link>
             </li>
-            <li class="nav-item active">
-                <router-link class='nav-link' to="/login">Login</router-link>
+            <li  class="nav-item active">
+                <router-link class="nav-link" to="/logout">Logout</router-link>
             </li>
+            <li  class="nav-item">
+                <router-link class="nav-link active" to="/login">Login</router-link>
+            </li>
+
         </ul>
     </div>
 </nav>
 
     `,
+    data: function() {
+        return {
+
+        }
+    }
 });
 
 // eslint-disable-next-line no-undef
@@ -36,9 +45,7 @@ const Home = Vue.component("home", {
     template: `
 
     <div>
-        <div class="alert alert-success col-md-12" role="alert" v-if='success'>
-            {{ notifs }}
-        </div>
+
         <div  class="home-contain" >
 
             <div>
@@ -66,7 +73,7 @@ const Home = Vue.component("home", {
         </div>
 </div>
     `,
-    props: ['notifs', 'success'],
+
     data: function() {
         return {};
     },
@@ -88,13 +95,9 @@ const NotFound = Vue.component("not-found", {
 const Login = Vue.component("login", {
     template: `
     <div>
-        <div class="alert alert-danger" role="alert" v-if='error'>
-            {{ message }}
+        <div>
         </div>
-        <div v-else>
-          <div class="alert alert-success" role="alert" v-if='success'>
-            {{ notifs }}
-          </div>
+
         <h1 class="center-div" id="head">Login</h1>
         <br>
     <div class="login">
@@ -156,7 +159,7 @@ const Login = Vue.component("login", {
                 });
         }
     },
-    props: ['notifs', 'success'],
+
     data: function() {
         return {
             error: false,
@@ -165,7 +168,27 @@ const Login = Vue.component("login", {
     }
 });
 
+const Logout = Vue.component("logout", {
+    template: `
+  <div>
+  <div/>`,
+    created: function() {
 
+        fetch("api/auth/logout", {
+            method: "GET"
+
+        }).then(function(response) {
+            return response.json();
+        }).then(function(jsonResponse) {
+            console.log(js)
+            localStorage.removeItem("current_user");
+            router.go();
+            router.push("/");
+        }).catch(function(error) {
+            console.log(error);
+        });
+    }
+});
 
 const Register = Vue.component("register-form", {
     template: `
@@ -231,14 +254,14 @@ const Register = Vue.component("register-form", {
                 })
                 .then(function(jsonResponse) {
                     console.log(jsonResponse);
-                    if (jsonResponse.hasOwnProperty("error")) {
+                    if (jsonResponse.hasOwnProperty("errors")) {
                         self.error = true;
-                        self.message = jsonResponse.error;
-                        this.success = false;
+                        self.message = jsonResponse.errors;
+
                     } else {
                         if (jsonResponse.hasOwnProperty("message")) {
 
-                            router.push({ name: 'login', params: { notifs: jsonResponse.getmessage, success: true } });
+                            router.push({ name: 'login', params: { notifs: jsonResponse.message, success: true } });
                         }
                     }
                 })
@@ -264,10 +287,10 @@ const profile = Vue.component("profile", {
             <div class="row justify-content-between bg-white border info align-items-center py-2 pr-0 pl-2">
                 <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="" style="height:120px;">
                 <div class="col col-lg-7 col-md-5 col-sm-5">
-                    <h1 class="mb-4 font-weight-bold">Rosa Diaz</h1>
-                    <p class="line-h text-muted">Kingston,Jamaica</p>
-                    <p class="line-h text-muted">Member since January 2018</p>
-                    <p class="text-muted">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+                    <h1 class="mb-4 font-weight-bold">{{user.firstname}} {{user.lastname}}</h1>
+                    <p class="line-h text-muted">{{user.location}}</p>
+                    <p class="line-h text-muted">Member since {{user.joined_on}} </p>
+                    <p class="text-muted"> {{user.biography}} </p>
                 </div>
                 <div class="col-lg-3 justify-content-end float-right">
                     <div class="row justify-content-end">
@@ -276,7 +299,7 @@ const profile = Vue.component("profile", {
                             <p class="text-muted font-weight-bold line-h">Posts</p>
                         </div>
                         <div class="ml-3">
-                            <p class="font-weight-bold text-center">6</p>
+                            <p class="font-weight-bold text-center">{{user.followers}}</p>
                             <p class="text-muted font-weight-bold line-h">Followers</p>
                         </div>
                     </div>
@@ -303,8 +326,65 @@ const profile = Vue.component("profile", {
     </section>
 </div>
     `,
+    created: function() {
+        self = this;
+        let id = "" + self.ID
+        fetch("/api/users/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
+
+                },
+                credentials: 'same-origin'
+            }).then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                /**if("posts" in jsonResponse){
+                    self.posts = jsonResponse.posts;
+                    }*/
+                self.user = data.user;
+
+            }).then(function(jsonResponse) {
+                console.log(jsonResponse)
+            }).catch(function(error) {
+                console.log(error);
+            });
+    },
+    created: function() {
+        self = this;
+        let id = "" + self.ID
+        fetch("/api/users/" + id + "/follows", {
+                method: "GET",
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
+
+                },
+                credentials: 'same-origin'
+            }).then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                /**if("posts" in jsonResponse){
+                    self.posts = jsonResponse.posts;
+                    }*/
+                self.follow = data.follow;
+
+            }).then(function(jsonResponse) {
+                console.log(jsonResponse)
+            }).catch(function(error) {
+                console.log(error);
+            });
+    },
     data: function() {
-        return {};
+        return {
+            user: [],
+            ID: user_id,
+            post: [],
+            follow: []
+        };
     },
 });
 
@@ -312,14 +392,15 @@ const explore = Vue.component("explore", {
     template: `
     <div class="explore-div">
         <div>
-            <section   class="center-section">
+            <section  class="center-section">
                 <div class="container-fluid">
                     <div class="row justify-content-center">
                         <div class="col col-lg-5 col-md-7">
-                            <div class="card ">
+                            <div v-for="post in posts" class="card ">
                                 <div class="card-header bg-white d-flex align-items-center">
                                     <img  v-bind:src=post.profile_photo style="width:40px"/>
                                     <h3 class="ml-2">{{post.username}}</h3>
+
                                 </div>
                                 <img class="" v-bind:src=post.photo alt="Card image cap" class="img-fluid" style="height:18rem;">
                                 <div class="card-body py-3 px-2">
@@ -353,23 +434,30 @@ const explore = Vue.component("explore", {
         self = this;
 
         fetch("/api/posts", {
-            method: "GET",
-            headers: {
-
-                'X-CSRFToken': token
-            },
-            credentials: 'same-origin'
-        }).then(function(response) {
-            return response.json();
-        }).then(function(jsonResponse) {
-            console.log(jsonResponse)
-        }).catch(function(error) {
-            console.log(error);
-        });
+                method: "GET",
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
+                    'X-CSRFToken': token
+                },
+                credentials: 'same-origin'
+            }).then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                /**if("posts" in jsonResponse){
+                    self.posts = jsonResponse.posts;
+                    }*/
+                self.posts = data.posts;
+            }).then(function(jsonResponse) {
+                console.log(jsonResponse)
+            }).catch(function(error) {
+                console.log(error);
+            });
     },
     data: function() {
         return {
-            post: [],
+            posts: [],
             postFlag: false
         };
     },
@@ -402,6 +490,11 @@ const router = new VueRouter({
             name: "explore",
             path: "/explore",
             component: explore
+        },
+        {
+            path: '/users/:user_id',
+            name: 'users',
+            component: profile
         },
 
         {

@@ -116,11 +116,16 @@ def post(user_id):
 def user(user_id):
     if request.method == 'GET' and request.json == {}:
         token = request.headers["Authorization"][7:]
-        decoded = jwt.decode(
-            token, app.config['SECRET_KEY'], algorithms="HS512")
+        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(user_id=user_id).first()
-        user_info = [{"id": user.id, "username": user.username, "firstname": user.firstname, "lastname": user.lastname,
-                    "email": user.email, "location": user.location, "profile_photo": user.profile_photo,
+        user_info = [{"id": user.id,
+                    "username": user.username,
+                    "firstname": user.firstname,
+                    "lastname": user.lastname,
+                    "email": user.email,
+                    "biography":user.biography,
+                    "location": user.location,
+                    "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
         return jsonify(user_info)
 
@@ -129,8 +134,8 @@ def user(user_id):
 def follow(user_id):
     if request.method == 'POST':
         token = request.headers["Authorization"][7:]
-        decoded = jwt.decode(
-            token, app.config['SECRET_KEY'], algorithms="HS512")
+        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+
         user_id = request.json['user_id']
         follower_id = request.json['follower_id']
         follow = Follows(user_id, follower_id)
