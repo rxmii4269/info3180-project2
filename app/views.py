@@ -72,7 +72,7 @@ def logout():
 
 
 
-@app.route('/api/users/<int:user_id>/posts', methods=['GET', 'POST'])
+@app.route('/api/users/<user_id>/posts', methods=['GET', 'POST'])
 def post(user_id):
     form = UploadForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -123,11 +123,16 @@ def user(user_id):
                     "biography":user.biography,
                     "location": user.location,
                     "profile_photo": user.profile_photo,
+<<<<<<< HEAD
                     "joined_on": user.joined_on}
+=======
+                    "joined_on": user.joined_on}]
+        print(jsonify(user_info))
+>>>>>>> 19aed0c5028dd283774d7d6fc4a486ea3225b90f
         return jsonify(user_info)
 
 
-@app.route('/api/users/<int:user_id>/follow', methods=['POST', 'GET'])
+@app.route('/api/users/<user_id>/follow', methods=['POST', 'GET'])
 def follow(user_id):
     if request.method == 'POST':
         token = request.headers["Authorization"][7:]
@@ -170,7 +175,7 @@ def posts():
         return jsonify({"message": "Invalid Request"}), 201
     pass
 
-@app.route('/api/post/<int:post_id>/like', methods=['POST'])
+@app.route('/api/post/<post_id>/like', methods=['POST'])
 def like_post():
     if request.method == "POST":
         user_id = request.json['user_id']

@@ -386,9 +386,19 @@ const profile = Vue.component("profile", {
                 console.log(error);
             });
     },
+<<<<<<< HEAD
     methods: {
         following_user: function() {
             let self = this;
+=======
+    created: function() {
+        self = this;
+        let id = "" + self.ID
+        fetch("/api/users/" + id + "/follow", {
+                method: "GET",
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
+>>>>>>> 19aed0c5028dd283774d7d6fc4a486ea3225b90f
 
             fetch(`/api/users/ ${self.ID} + /follow`, {
                     method: "POST",
