@@ -69,6 +69,8 @@ def login():
 def logout():
     if request.method == 'POST':
         return jsonify({"message": "User successfully logged out"})
+    else:
+        return "Error"
 
 
 
@@ -124,9 +126,7 @@ def user(user_id):
                     "location": user.location,
                     "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
-
-        print(jsonify(user_info))
-        return jsonify(user_info)
+        return jsonify(user_info),200
 
 
 @app.route('/api/users/<user_id>/follow', methods=['POST', 'GET'])
@@ -143,7 +143,7 @@ def follow(user_id):
         message = [{"message": "You are following that user."}]
         return jsonify(message), 201
     elif request.method == "GET":
-        followers = Follows.query.filter_by(user_id).count()
+        followers = Follows.query.filter_by(id=user_id).count()
         return jsonify([{"followers": followers}])
 
 
@@ -154,15 +154,15 @@ def posts():
         posts = Posts.query.all()
         for post in posts:
 
-            likes=len(Likes.query.filter(post_id=post.id).all())
-            payload={"id":post.id,
+            likes=len(Likes.query.filter_by(id=post.id).all())
+            payload={
+            "id":post.id,
             "user_id":post.user_id,
-            "profile_photo": os.path.join(app.config['UPLOAD_FOLDER'],user.profile_photo),
-            "username": user.username,
             "photo":post.photo,
-            "caption":post.caption,
+            "description":post.caption,
             "created_on":post.created_on,
-            "Likes":likes}
+            "likes":likes
+            }
 
             allpost.append(payload)
 
