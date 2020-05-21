@@ -327,6 +327,7 @@ const profile = Vue.component("profile", {
 </div>
     `,
     created: function() {
+        
         self = this;
         let id = "" + self.ID
         fetch("/api/users/" + id, {
@@ -388,6 +389,59 @@ const profile = Vue.component("profile", {
     },
 });
 
+const Newpost = Vue.component("NewPost", {
+    template: `<div class="explore-div">
+
+    <form @submit.prevent="Newpost" id="NewpostForm" method="POST" >
+    <div class="form-group mb-3 my-3">
+        <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
+        <input class="form-control-file" type="file" id="photo" name="profile_photo">
+    </div>
+
+
+    <div class="form-group">
+
+    <label for="Caption" class="form-label font-weight-bold text-muted">Caption</label>
+    <textarea class="form-control" name="Caption"  id="biography" cols=40, rows=2></textarea>
+    </div>
+
+    </form>
+  
+
+   
+    
+    </div>`,
+    methods: {
+        Newpost: function() {
+            let self = this;
+            let NewpostForm = document.getElementById("NewpostForm");
+            let form_data = new FormData(NewpostForm);
+            fetch("/api/users/{user_id}/posts", {
+                    method: "POST",
+                    body: form_data,
+                    headers: {
+                        "X-CSRFToken": token
+                    },
+                    credentials: "same-origin",
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(jsonResponse) {
+                    console.log(jsonResponse)
+                });
+            },
+
+    data: function() {
+        return {
+            
+         }
+    }
+
+}
+
+
+
 const explore = Vue.component("explore", {
     template: `
     <div class="explore-div">
@@ -419,7 +473,7 @@ const explore = Vue.component("explore", {
                             </div>
                         </div>
                         <div>
-                            <button id="btn2">New Post</button>
+                           <router-link id=btn2 class="nav-link" to="NewPost" >New Post</router-link>
                         </div>
                     </div>
                 </div>
@@ -495,6 +549,12 @@ const router = new VueRouter({
             path: '/users/:user_id',
             name: 'users',
             component: profile
+        },
+        {
+            path: '/posts/new',
+            name: 'NewPost',
+            component: Newpost
+
         },
 
         {
