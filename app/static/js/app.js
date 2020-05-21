@@ -33,8 +33,40 @@ Vue.component("app-header", {
 </nav>
 
     `,
+  methods: {
+    logOut: function () {
+      let self = this;
+      fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+          "X-CSRFToken": token,
+        },
+        credentials: "same-origin",
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+          //remove token from local storage
+          localStorage.removeItem("token");
+          localStorage.removeItem("id");
+          sessionStorage.removeItem("id_details");
+          self.message = jsonResponse["message"];
+          self.token = "";
+          self.$router.push("/");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+  },
   data: function () {
-    return {};
+    return {
+      token: localStorage.getItem("token"),
+      message: "",
+    };
   },
 });
 
@@ -43,7 +75,6 @@ const Home = Vue.component("home", {
   template: `
 
     <div>
-
         <div  class="home-contain" >
 
             <div>
@@ -283,7 +314,7 @@ const profile = Vue.component("profile", {
         <section class="center-section">
         <div class="container-fluid">
             <div class="row justify-content-between bg-white border info align-items-center py-2 pr-0 pl-2">
-                <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="" style="height:120px;">
+                <img v-bind:src="'/static/upload/' + user.profile_photo" alt="" class="" style="height:120px;">
                 <div class="col col-lg-7 col-md-5 col-sm-5">
                     <h1 class="mb-4 font-weight-bold">{{user.firstname}} {{user.lastname}}</h1>
                     <p class="line-h text-muted">{{user.location}}</p>
@@ -302,7 +333,7 @@ const profile = Vue.component("profile", {
                         </div>
                     </div>
                     <div class="row justify-content-end ml-auto mt-3">
-                        <button class="btn btn-primary text-white btnblock" style="width:120px;">Follow</button>
+                        <button v-on:click="following_user" class="btn btn-primary text-white btnblock" style="width:120px;">{{follow_msg}}</button>
                     </div>
                 </div>
             </div>
@@ -326,65 +357,89 @@ const profile = Vue.component("profile", {
     `,
   created: function () {
     self = this;
-    let id = "" + self.ID;
-    fetch("/api/users/" + id, {
+    self.ID = sessionStorage.getItem("id_details");
+    fetch(`/api/users/${self.ID}`, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("jwt_token"),
       },
       credentials: "same-origin",
     })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (data) {
-        console.log(data);
-        /**if("posts" in jsonResponse){
-                    self.posts = jsonResponse.posts;
-                    }*/
-        self.user = data.user;
+      .then(function (Response) {
+        if (!localStorage.getItem("token")) {
+          self.$router.push("/login");
+        }
+        return Response.json();
       })
       .then(function (jsonResponse) {
         console.log(jsonResponse);
+        //console.log(self.user.firstname);
+        self.user = jsonResponse["user"];
       })
       .catch(function (error) {
         console.log(error);
       });
   },
-  created: function () {
-    self = this;
-    let id = "" + self.ID;
-    fetch("/api/users/" + id + "/follow", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt_token"),
-      },
-      credentials: "same-origin",
-    })
-      .then(function (response) {
-        return response.json();
+
+  methods: {
+    following_user: function () {
+      let self = this;
+      fetch(`/api/users/ ${self.ID} + /follow`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+          "X-CSRFToken": token,
+        },
+        credentials: "same-origin",
       })
-      .then(function (data) {
-        console.log(data);
-        /**if("posts" in jsonResponse){
-                    self.posts = jsonResponse.posts;
-                    }*/
-        self.follow = data.follow;
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          self.follow_msg = "Following";
+          self.message = jsonResponse["message"];
+          self.followers = self.followerCount();
+          console.log(jsonResponse);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    follower: function () {
+      let self = this;
+      fetch(`/api/users/${self.ID}/follow`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
       })
-      .then(function (jsonResponse) {
-        console.log(jsonResponse);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  },
-  data: function () {
-    return {
-      user: [],
-      ID: user_id,
-      post: [],
-      follow: [],
-    };
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          self.followers = jsonResponse["followers"];
+          if (jsonResponse["following"]) {
+            self.btn_message = "Following";
+          } else {
+            self.btn_message = "Follow";
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+
+    posts: function () {},
+
+    data: function () {
+      return {
+        user: "",
+        ID: "",
+        follow_msg: "Follow",
+        posts: [],
+        follow: 0,
+      };
+    },
   },
 });
 
@@ -399,7 +454,8 @@ const explore = Vue.component("explore", {
                             <div v-for="post in posts" class="card ">
                                 <div class="card-header bg-white d-flex align-items-center">
                                     <img  v-bind:src=post.profile_photo style="width:40px"/>
-                                    <h3 class="ml-2">{{post.username}}</h3>
+                                    <a @click="viewUser(post.user_id)" class="pointer">
+                                    <h3 class="ml-2">{{post.username}}</h3></a>
 
                                 </div>
                                 <img class="" v-bind:src=post.photo alt="Card image cap" class="img-fluid" style="height:18rem;">
@@ -419,7 +475,7 @@ const explore = Vue.component("explore", {
                             </div>
                         </div>
                         <div>
-                            <button id="btn2">New Post</button>
+                            <button id="btn2" v-on:click="newpost ">New Post</button>
                         </div>
                     </div>
                 </div>
@@ -446,9 +502,7 @@ const explore = Vue.component("explore", {
       })
       .then(function (data) {
         console.log(data);
-        /**if("posts" in jsonResponse){
-                    self.posts = jsonResponse.posts;
-                    }*/
+
         self.posts = data.posts;
       })
       .then(function (jsonResponse) {
@@ -458,10 +512,95 @@ const explore = Vue.component("explore", {
         console.log(error);
       });
   },
+  methods: {
+    newpost: function () {
+      this.$router.push("/post");
+    },
+    viewUser: function (user_id) {
+      sessionStorage.setItem("id_details", user_id);
+      this.$router.push(`/users/${user_id}`);
+    },
+  },
   data: function () {
     return {
       posts: [],
       postFlag: false,
+    };
+  },
+});
+
+const newpost = Vue.component("newpost", {
+  template: `
+    <div class="container-fluid create-post">
+        <div class="row justify-content-center">
+            <div class="col col-xl-4 col-lg-6 col-md-5 col-sm-8 ">
+                <h1 class="text-muted post-title ml-2 mb-3">New Post</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center mx-auto">
+            <div class="col col-xl-4  col-lg-6 col-md-5 col-sm-8 text-center">
+
+
+                <form  @submit.prevent="newPost" id='post-form' action="" class="border px-4 py-3 bg-white">
+                    <div class="form-input text-left">
+                    <div class="form-group mb-3 my-3">
+                        <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
+                        <input class="form-control-file" type="file" id="photo" name="profile_photo">
+                    </div>
+
+                    </div>
+                    <div class="form-input text-left my-4">
+                        <label for="caption" class="d-block font-weight-bold text-muted">Caption</label>
+                        <textarea name="caption" id="" cols="33" rows="3" class="form-control"
+                            placeholder="Write a Caption..."></textarea>
+                    </div>
+                    <button >Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    `,
+  methods: {
+    newPost: function () {
+      let self = this;
+      let postForm = document.getElementById("post-form");
+      let form_data = new FormData(postForm);
+
+      fetch(`/api/users/${self.id}/posts`, {
+        method: "POST",
+        body: form_data,
+        headers: {
+          "X-CSRFToken": token,
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        credentials: "same-origin",
+      })
+        .then(function (response) {
+          console.log(response);
+          if (!response.ok) {
+            self.$router.push("/login");
+          }
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+          self.message = jsonResponse["message"];
+          postForm.reset();
+          setTimeout(function () {
+            self.message = "";
+          }, 5000);
+        })
+        .catch(function (error) {
+          console.log(error);
+          self.errors = error;
+        });
+    },
+  },
+  data: function () {
+    return {
+      message: "",
+      id: localStorage.getItem("id"),
+      errors: [],
     };
   },
 });
@@ -497,6 +636,11 @@ const router = new VueRouter({
       path: "/users/:user_id",
       name: "users",
       component: profile,
+    },
+    {
+      name: "newpost",
+      path: "/post",
+      component: newpost,
     },
 
     {
