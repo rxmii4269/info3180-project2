@@ -355,7 +355,7 @@ const profile = Vue.component("profile", {
     created: function() {
         self = this;
         let id = "" + self.ID
-        fetch("/api/users/" + id + "/follows", {
+        fetch("/api/users/" + id + "/follow", {
                 method: "GET",
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
