@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 
 import jwt
-from flask import render_template, request
+from flask import render_template, request, make_response
 
 from flask.json import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -109,13 +109,13 @@ def post(user_id):
         return "Form did not validate"
 
 
-@app.route("/api/users/<user_id>", methods=['GET'])
+@app.route("/api/users/<int:user_id>", methods=['GET'])
 def user(user_id):
     if request.method == 'GET':
-        token = request.headers["Authorization"][7:]
-        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+        #token = request.headers["Authorization"][7:]
+        #decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(user_id=user_id).first()
-        user_info = [{"id": user.id,
+        user_info = {"id": user.id,
                     "username": user.username,
                     "firstname": user.firstname,
                     "lastname": user.lastname,
@@ -123,7 +123,7 @@ def user(user_id):
                     "biography":user.biography,
                     "location": user.location,
                     "profile_photo": user.profile_photo,
-                    "joined_on": user.joined_on}]
+                    "joined_on": user.joined_on}
         return jsonify(user_info)
 
 
@@ -142,7 +142,7 @@ def follow(user_id):
         return jsonify(message), 201
     elif request.method == "GET":
         followers = Follows.query.filter_by(user_id).count()
-        return jsonify([{"followers": followers}]), 201
+        return jsonify([{"followers": followers}])
 
 
 @app.route('/api/posts', methods=['GET'])
