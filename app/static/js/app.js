@@ -39,7 +39,7 @@ Vue.component("app-header", {
       fetch("/api/auth/logout", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("token"),
+          Authorization: "Bearer " + localStorage.getItem("token"),
         },
         credentials: "same-origin",
       })
@@ -167,28 +167,25 @@ const Login = Vue.component("login", {
           return response.json();
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse);
           if (jsonResponse.hasOwnProperty("token")) {
             let jwt_token = jsonResponse.token;
+            let id = JSON.parse(atob(jwt_token.split(".")[1])).id;
             localStorage.setItem("token", jwt_token);
+            localStorage.setItem("current_user", id);
+            self.message = jsonResponse["message"];
+
+            console.log(id);
+
             router.push("/explore");
           } else {
-            self.error = true;
-            self.message = jsonResponse.error;
+            self.errors = jsonResponse["error"];
           }
         })
         .catch(function (error) {
-          self.error = false;
+          self.errors = error;
           console.log(error);
         });
     },
-  },
-
-  data: function () {
-    return {
-      error: false,
-      message: "",
-    };
   },
 });
 
@@ -353,23 +350,21 @@ const profile = Vue.component("profile", {
     `,
   created: function () {
     let self = this;
-    let token = localStorage.getItem('token');
-    self.ID = JSON.parse(atob(token.split('.')[1])).id;
+    let token = localStorage.getItem("token");
+    self.ID = JSON.parse(atob(token.split(".")[1])).id;
     fetch(`/api/users/${self.ID}`, {
       method: "GET",
       headers: {
-        "Authorization": "Bearer " + token,
+        Authorization: "Bearer " + token,
       },
       credentials: "same-origin",
     })
       .then(function (Response) {
         if (!localStorage.getItem("token")) {
           self.router.push("/login");
+        } else {
+          return Response.json();
         }
-        else{
-            return Response.json();
-        }
-        
       })
       .then(function (jsonResponse) {
         console.log(jsonResponse);
@@ -388,7 +383,7 @@ const profile = Vue.component("profile", {
       fetch(`/api/users/ ${self.ID} + /follow`, {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("token"),
+          Authorization: "Bearer " + localStorage.getItem("token"),
           "X-CSRFToken": token,
         },
         credentials: "same-origin",
@@ -411,7 +406,7 @@ const profile = Vue.component("profile", {
       fetch(`/api/users/${self.ID}/follow`, {
         method: "GET",
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("token"),
+          Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
         .then(function (response) {
@@ -493,7 +488,7 @@ const explore = Vue.component("explore", {
     fetch("/api/posts", {
       method: "GET",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token"),
+        Authorization: "Bearer " + localStorage.getItem("token"),
         "X-CSRFToken": token,
       },
       credentials: "same-origin",
@@ -550,16 +545,14 @@ const newpost = Vue.component("newpost", {
                     </div>
 
                     </div>
-                    <div class="form-input text-left my-4">
-                        <label for="caption" class="d-block font-weight-bold text-muted">Caption</label>
-                        <textarea name="caption" id="" cols="33" rows="3" class="form-control"
-                            placeholder="Write a Caption..."></textarea>
+                    <button type="submit" id="btn" class="btn btn-block btn-outline-danger">NewPost</button>
                     </div>
-                    <button >Submit</button>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+
+
     `,
   methods: {
     newPost: function () {
@@ -572,7 +565,7 @@ const newpost = Vue.component("newpost", {
         body: form_data,
         headers: {
           "X-CSRFToken": token,
-          "Authorization": "Bearer " + localStorage.getItem("token"),
+          Authorization: "Bearer " + localStorage.getItem("token"),
         },
         credentials: "same-origin",
       })

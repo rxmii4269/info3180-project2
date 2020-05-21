@@ -124,6 +124,8 @@ def user(user_id):
                     "location": user.location,
                     "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
+
+        print(jsonify(user_info))
         return jsonify(user_info)
 
 
