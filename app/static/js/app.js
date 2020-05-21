@@ -169,16 +169,16 @@ const Login = Vue.component("login", {
                     return response.json();
                 })
                 .then(function(jsonResponse) {
-                    console.log(jsonResponse);
+
                     if (jsonResponse.hasOwnProperty('token')) {
-                        let jwt_token = jsonResponse['token'];
-                        let id = jsonResponse['id'];
-
+                        let jwt_token = jsonResponse.token;
+                        let id = JSON.parse(atob(jwt_token.split(".")[1])).id;
+                        localStorage.setItem("token", jwt_token);
+                        localStorage.setItem('current_user', id);
                         self.message = jsonResponse['message']
-                        localStorage.setItem('token', jwt_token);
-                        localStorage.setItem('id', id);
 
-                        self.token = jwt_token;
+                        console.log(id);
+
                         router.push('/explore');
                     } else {
                         self.errors = jsonResponse['error'];
@@ -386,19 +386,10 @@ const profile = Vue.component("profile", {
                 console.log(error);
             });
     },
-<<<<<<< HEAD
     methods: {
         following_user: function() {
             let self = this;
-=======
-    created: function() {
-        self = this;
-        let id = "" + self.ID
-        fetch("/api/users/" + id + "/follow", {
-                method: "GET",
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('jwt_token'),
->>>>>>> 19aed0c5028dd283774d7d6fc4a486ea3225b90f
+
 
             fetch(`/api/users/ ${self.ID} + /follow`, {
                     method: "POST",
@@ -506,7 +497,7 @@ const explore = Vue.component("explore", {
     `,
     created: function() {
         self = this;
-
+        let id = localStorage.getItem("current_user");
         fetch("/api/posts", {
                 method: "GET",
                 headers: {
@@ -522,7 +513,7 @@ const explore = Vue.component("explore", {
 
                 self.posts = data.posts;
             }).then(function(jsonResponse) {
-                console.log(jsonResponse)
+
             }).catch(function(error) {
                 console.log(error);
             });
@@ -538,55 +529,52 @@ const explore = Vue.component("explore", {
     },
     data: function() {
         return {
+
             posts: [],
-            postFlag: false
+            postFlag: false,
+            token: ''
         };
     },
 });
 
 const newpost = Vue.component("newpost", {
     template: `
-    <div class="container-fluid create-post">
-        <div class="row justify-content-center">
-            <div class="col col-xl-4 col-lg-6 col-md-5 col-sm-8 ">
-                <h1 class="text-muted post-title ml-2 mb-3">New Post</h1>
+        <div>
+            <div>
+                <h1 class="center-div" id="head">New Posts</h1>
+                <br>
+                <div class="login">
+                    <form @submit.prevent="newPost" id='post-form'  name="post-form">
+                    <div class="form-group">
+                        <div>
+                            <label  for="photo" >Photo</label>
+                            <input class="form-control-file" type="file" id="photo" name="profile_photo">
+                        </div>
+                    <div>
+                        <label for="caption">Caption</label>
+                        <textarea name="caption" id="caption" cols="33" rows="3" class="form-control" placeholder="Write a Caption..."></textarea>
+                    </div>
+                    <button type="submit" id="btn" class="btn btn-block btn-outline-danger">NewPost</button>
+                    </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="row justify-content-center mx-auto">
-            <div class="col col-xl-4  col-lg-6 col-md-5 col-sm-8 text-center">
 
 
-                <form  @submit.prevent="newPost" id='post-form' action="" class="border px-4 py-3 bg-white">
-                    <div class="form-input text-left">
-                    <div class="form-group mb-3 my-3">
-                        <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
-                        <input class="form-control-file" type="file" id="photo" name="profile_photo">
-                    </div>
-
-                    </div>
-                    <div class="form-input text-left my-4">
-                        <label for="caption" class="d-block font-weight-bold text-muted">Caption</label>
-                        <textarea name="caption" id="" cols="33" rows="3" class="form-control"
-                            placeholder="Write a Caption..."></textarea>
-                    </div>
-                    <button >Submit</button>
-                </form>
-            </div>
-        </div>
-    </div>
     `,
     methods: {
         newPost: function() {
             let self = this;
             let postForm = document.getElementById('post-form');
             let form_data = new FormData(postForm);
-
-            fetch(`/api/users/${self.id}/posts`, {
+            let id = localStorage.getItem("current_user");
+            fetch(`/api/users/${id}/posts`, {
                     method: 'POST',
                     body: form_data,
                     headers: {
                         'X-CSRFToken': token,
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
                     },
                     credentials: 'same-origin'
                 })

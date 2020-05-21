@@ -115,7 +115,7 @@ def user(user_id):
         #token = request.headers["Authorization"][7:]
         #decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(user_id=user_id).first()
-        user_info = {"id": user.id,
+        user_info = [{"id": user.id,
                     "username": user.username,
                     "firstname": user.firstname,
                     "lastname": user.lastname,
@@ -123,12 +123,8 @@ def user(user_id):
                     "biography":user.biography,
                     "location": user.location,
                     "profile_photo": user.profile_photo,
-<<<<<<< HEAD
-                    "joined_on": user.joined_on}
-=======
                     "joined_on": user.joined_on}]
-        print(jsonify(user_info))
->>>>>>> 19aed0c5028dd283774d7d6fc4a486ea3225b90f
+
         return jsonify(user_info)
 
 
