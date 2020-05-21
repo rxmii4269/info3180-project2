@@ -53,7 +53,7 @@ def login():
             issued_date = datetime.utcnow()
             exp_date = issued_date + timedelta(minutes=15)
             payload = {"id": user.id, "name": user.username,
-                    "iat": issued_date, "exp": exp_date}
+                    "iat": issued_date}
             token = jwt.encode(
                 payload, app.config["SECRET_KEY"], algorithm="HS512").decode('UTF-8')
             message = "User successfully logged in"
@@ -83,7 +83,7 @@ def post(user_id):
         filename = secure_filename(photo.filename)
         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         created_on = datetime.today().strftime('%Y-%m-%d')
-        post = Posts(user_id, photo, caption, created_on)
+        post = Posts(user_id, filename, caption, created_on)
         db.session.add(post)
         db.session.commit()
         return jsonify({"message": "Successfully created a new post"}), 201
@@ -109,12 +109,12 @@ def post(user_id):
         return "Form did not validate"
 
 
-@app.route("/api/users/<int:user_id>", methods=['GET'])
+@app.route("/api/users/<user_id>", methods=['GET'])
 def user(user_id):
     if request.method == 'GET':
-        #token = request.headers["Authorization"][7:]
-        #decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
-        user = Users.query.filter_by(user_id=user_id).first()
+        token = request.headers["Authorization"][7:]
+        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+        user = Users.query.filter_by(id=user_id).first()
         user_info = [{"id": user.id,
                     "username": user.username,
                     "firstname": user.firstname,
@@ -124,7 +124,6 @@ def user(user_id):
                     "location": user.location,
                     "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
-        print(jsonify(user_info))
         return jsonify(user_info)
 
 

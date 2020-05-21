@@ -4,7 +4,7 @@ from . import db
 class Users(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     firstname = db.Column(db.String(50), nullable=False)
@@ -39,7 +39,7 @@ class Users(db.Model):
 class Posts(db.Model):
     __tablename__ = 'posts'
 
-    id = db.Column(db.Integer, primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True,unique=True,autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True, nullable=False)
     photo = db.Column(db.String(120), nullable=False)
     caption = db.Column(db.String(255), nullable=False)
@@ -64,7 +64,7 @@ class Posts(db.Model):
 class Likes(db.Model):
     __tablename__ = 'likes'
 
-    id = db.Column(db.Integer)
+    id = db.Column(db.Integer,primary_key=True,unique=True,autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True, nullable=False)
 

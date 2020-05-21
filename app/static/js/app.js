@@ -39,8 +39,7 @@ Vue.component("app-header", {
       fetch("/api/auth/logout", {
         method: "POST",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-          "X-CSRFToken": token,
+          "Authorization": "Bearer " + localStorage.getItem("token"),
         },
         credentials: "same-origin",
       })
@@ -52,10 +51,10 @@ Vue.component("app-header", {
           //remove token from local storage
           localStorage.removeItem("token");
           localStorage.removeItem("id");
-          sessionStorage.removeItem("id_details");
+          localStorage.removeItem("id_details");
           self.message = jsonResponse["message"];
           self.token = "";
-          self.$router.push("/");
+          self.router.push("/");
         })
         .catch(function (error) {
           console.log(error);
@@ -171,10 +170,7 @@ const Login = Vue.component("login", {
           console.log(jsonResponse);
           if (jsonResponse.hasOwnProperty("token")) {
             let jwt_token = jsonResponse.token;
-            let id = JSON.parse(atob(jwt_token.split(".")[1])).id;
             localStorage.setItem("token", jwt_token);
-            localStorage.setItem("current_user", id);
-
             router.push("/explore");
           } else {
             self.error = true;
@@ -199,7 +195,7 @@ const Login = Vue.component("login", {
 const Logout = Vue.component("logout", {
   template: `
   <div>
-  <div/>`,
+  </div>`,
   created: function () {
     fetch("api/auth/logout", {
       method: "GET",
@@ -208,8 +204,8 @@ const Logout = Vue.component("logout", {
         return response.json();
       })
       .then(function (jsonResponse) {
-        console.log(js);
-        localStorage.removeItem("current_user");
+        console.log(jsonResponse);
+        localStorage.removeItem("token");
         router.go();
         router.push("/");
       })
@@ -356,25 +352,30 @@ const profile = Vue.component("profile", {
 </div>
     `,
   created: function () {
-    self = this;
-    self.ID = sessionStorage.getItem("id_details");
+    let self = this;
+    let token = localStorage.getItem('token');
+    self.ID = JSON.parse(atob(token.split('.')[1])).id;
     fetch(`/api/users/${self.ID}`, {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+        "Authorization": "Bearer " + token,
       },
       credentials: "same-origin",
     })
       .then(function (Response) {
         if (!localStorage.getItem("token")) {
-          self.$router.push("/login");
+          self.router.push("/login");
         }
-        return Response.json();
+        else{
+            return Response.json();
+        }
+        
       })
       .then(function (jsonResponse) {
         console.log(jsonResponse);
         //console.log(self.user.firstname);
-        self.user = jsonResponse["user"];
+        self.user = jsonResponse;
+        console.log(self.user);
       })
       .catch(function (error) {
         console.log(error);
@@ -387,7 +388,7 @@ const profile = Vue.component("profile", {
       fetch(`/api/users/ ${self.ID} + /follow`, {
         method: "POST",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+          "Authorization": "Bearer " + localStorage.getItem("token"),
           "X-CSRFToken": token,
         },
         credentials: "same-origin",
@@ -410,7 +411,7 @@ const profile = Vue.component("profile", {
       fetch(`/api/users/${self.ID}/follow`, {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          "Authorization": "Bearer " + localStorage.getItem("token"),
         },
       })
         .then(function (response) {
@@ -454,7 +455,7 @@ const explore = Vue.component("explore", {
                             <div v-for="post in posts" class="card ">
                                 <div class="card-header bg-white d-flex align-items-center">
                                     <img  v-bind:src=post.profile_photo style="width:40px"/>
-                                    <a @click="viewUser(post.user_id)" class="pointer">
+                                    <a @click="viewUser(post.id)" class="pointer">
                                     <h3 class="ml-2">{{post.username}}</h3></a>
 
                                 </div>
@@ -492,7 +493,7 @@ const explore = Vue.component("explore", {
     fetch("/api/posts", {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+        "Authorization": "Bearer " + localStorage.getItem("token"),
         "X-CSRFToken": token,
       },
       credentials: "same-origin",
@@ -514,11 +515,11 @@ const explore = Vue.component("explore", {
   },
   methods: {
     newpost: function () {
-      this.$router.push("/post");
+      this.router.push("/post");
     },
-    viewUser: function (user_id) {
-      sessionStorage.setItem("id_details", user_id);
-      this.$router.push(`/users/${user_id}`);
+    viewUser: function (id) {
+      localStorage.setItem("id_details", id);
+      this.router.push(`/users/${id}`);
     },
   },
   data: function () {
@@ -571,14 +572,14 @@ const newpost = Vue.component("newpost", {
         body: form_data,
         headers: {
           "X-CSRFToken": token,
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          "Authorization": "Bearer " + localStorage.getItem("token"),
         },
         credentials: "same-origin",
       })
         .then(function (response) {
           console.log(response);
           if (!response.ok) {
-            self.$router.push("/login");
+            self.router.push("/login");
           }
           return response.json();
         })
@@ -618,6 +619,11 @@ const router = new VueRouter({
       component: Login,
     },
     {
+      name: "logout",
+      path: "/logout",
+      component: Logout,
+    },
+    {
       name: "register",
       path: "/register",
       component: Register,
@@ -633,7 +639,7 @@ const router = new VueRouter({
       component: explore,
     },
     {
-      path: "/users/:user_id",
+      path: "/users/id",
       name: "users",
       component: profile,
     },
