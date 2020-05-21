@@ -129,7 +129,11 @@ def user(user_id):
                     "location": user.location,
                     "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
+<<<<<<< HEAD
+
+=======
         print(jsonify(user_info))
+>>>>>>> 55ae1bcbb17c8e843725cd9fff6a6a97a1c5f0e8
         return jsonify(user_info)
 
 

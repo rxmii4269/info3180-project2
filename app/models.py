@@ -39,7 +39,7 @@ class Users(db.Model):
 class Posts(db.Model):
     __tablename__ = 'posts'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True )
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True, nullable=False)
     photo = db.Column(db.String(120), nullable=False)
     caption = db.Column(db.String(255), nullable=False)
