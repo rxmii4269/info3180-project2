@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 
 import jwt
-from flask import render_template, request
+from flask import render_template, request, make_response
 
 from flask.json import jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -72,18 +72,23 @@ def logout():
 
 
 
-@app.route('/api/users/<int:user_id>/posts', methods=['GET', 'POST'])
+@app.route('/api/users/<user_id>/posts', methods=['GET', 'POST'])
 def post(user_id):
     form = UploadForm()
+    print('hole')
+    print( form.photo.data,'\n',form.caption.data)
+    
     if request.method == 'POST' and form.validate_on_submit():
-        token = request.headers["Authorization"][7:]
-        jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+       
+        '''token = request.headers["Authorization"][7:]
+        jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")'''
+        print( form.photo.data,'\n',form.caption.data)
         photo = form.photo.data
-        caption = request.json['description']
+        caption = form.caption.data
         filename = secure_filename(photo.filename)
         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         created_on = datetime.today().strftime('%Y-%m-%d')
-        post = Posts(user_id, photo, caption, created_on)
+        post = Posts(user_id, filename, caption, created_on)
         db.session.add(post)
         db.session.commit()
         return jsonify({"message": "Successfully created a new post"}), 201
@@ -109,11 +114,11 @@ def post(user_id):
         return "Form did not validate"
 
 
-@app.route("/api/users/<user_id>", methods=['GET'])
+@app.route("/api/users/<int:user_id>", methods=['GET'])
 def user(user_id):
     if request.method == 'GET':
-        token = request.headers["Authorization"][7:]
-        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+        #token = request.headers["Authorization"][7:]
+        #decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(user_id=user_id).first()
         user_info = [{"id": user.id,
                     "username": user.username,
@@ -124,10 +129,11 @@ def user(user_id):
                     "location": user.location,
                     "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
+        print(jsonify(user_info))
         return jsonify(user_info)
 
 
-@app.route('/api/users/<int:user_id>/follow', methods=['POST', 'GET'])
+@app.route('/api/users/<user_id>/follow', methods=['POST', 'GET'])
 def follow(user_id):
     if request.method == 'POST':
         token = request.headers["Authorization"][7:]
@@ -142,7 +148,7 @@ def follow(user_id):
         return jsonify(message), 201
     elif request.method == "GET":
         followers = Follows.query.filter_by(user_id).count()
-        return jsonify([{"followers": followers}]), 201
+        return jsonify([{"followers": followers}])
 
 
 @app.route('/api/posts', methods=['GET'])
@@ -170,7 +176,7 @@ def posts():
         return jsonify({"message": "Invalid Request"}), 201
     pass
 
-@app.route('/api/post/<int:post_id>/like', methods=['POST'])
+@app.route('/api/post/<post_id>/like', methods=['POST'])
 def like_post():
     if request.method == "POST":
         user_id = request.json['user_id']
