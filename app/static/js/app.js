@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 // eslint-disable-next-line no-undef
-Vue.component("app-header", {
+Vue.component('app-header', {
   template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <img src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png" class="pd-8"/><a class="navbar-brand billabong" href="#">Photogram</a>
@@ -31,42 +31,42 @@ Vue.component("app-header", {
     `,
   methods: {
     logOut: function () {
-      let self = this;
-      fetch("/api/auth/logout", {
-        method: "POST",
+      const self = this
+      fetch('/api/auth/logout', {
+        method: 'POST',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
         },
-        credentials: "same-origin",
+        credentials: 'same-origin'
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse);
-          //remove token from local storage
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          localStorage.removeItem("id_details");
-          self.message = jsonResponse["message"];
-          self.token = "";
-          self.router.push("/");
+          console.log(jsonResponse)
+          // remove token from local storage
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('id')
+          sessionStorage.removeItem('id_details')
+          self.message = jsonResponse.message
+          self.token = ''
+          self.router.push('/')
         })
         .catch(function (error) {
-          console.log(error);
-        });
-    },
+          console.log(error)
+        })
+    }
   },
   data: function () {
     return {
-      token: localStorage.getItem("token"),
-      message: "",
-    };
-  },
-});
+      token: sessionStorage.getItem('token'),
+      message: ''
+    }
+  }
+})
 
 // eslint-disable-next-line no-undef
-const Home = Vue.component("home", {
+const Home = Vue.component('home', {
   template: `
 
         <div class="home-contain" >
@@ -97,22 +97,22 @@ const Home = Vue.component("home", {
     `,
 
   data: function () {
-    return {};
-  },
-});
+    return {}
+  }
+})
 
 // eslint-disable-next-line no-undef
-const NotFound = Vue.component("not-found", {
+const NotFound = Vue.component('not-found', {
   template: `
         <h1>404 - Not Found</h1>
     `,
   data: function () {
-    return {};
-  },
-});
+    return {}
+  }
+})
 
 // eslint-disable-next-line no-undef
-const Login = Vue.component("login", {
+const Login = Vue.component('login', {
   template: `
     <div>
       <h1 class="center-div" id="head">Login</h1>
@@ -134,88 +134,88 @@ const Login = Vue.component("login", {
     `,
   methods: {
     loginUser: function () {
-      let loginForm = document.getElementById("loginForm");
-      let form_data = new FormData(loginForm);
+      const loginForm = document.getElementById('loginForm')
+      const form_data = new FormData(loginForm)
       // eslint-disable-next-line no-undef
-      let payload = JSON.stringify(Object.fromEntries(form_data));
+      const payload = JSON.stringify(Object.fromEntries(form_data))
       // eslint-disable-next-line no-undef
-      console.log(payload);
-      fetch("/api/auth/login", {
-        method: "POST",
+      console.log(payload)
+      fetch('/api/auth/login', {
+        method: 'POST',
         body: payload,
         headers: {
-          "X-CSRFToken": token,
-          "Content-Type": "application/json",
+          'X-CSRFToken': token,
+          'Content-Type': 'application/json'
         },
-        credentials: "same-origin",
+        credentials: 'same-origin'
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          if (jsonResponse.hasOwnProperty("token")) {
-            let token = jsonResponse.token;
-            let id = JSON.parse(atob(token.split(".")[1])).id;
-            localStorage.setItem("token", token);
-            localStorage.setItem("current_user", id);
-            self.message = jsonResponse["message"];
+          if (jsonResponse.hasOwnProperty('token')) {
+            const token = jsonResponse.token
+            const id = JSON.parse(atob(token.split('.')[1])).id
+            sessionStorage.setItem('token', token)
+            sessionStorage.setItem('current_user', id)
+            self.message = jsonResponse.message
 
-            console.log(id);
+            console.log(id)
 
-            router.push("/explore");
+            router.push('/explore')
           } else {
-            self.errors = jsonResponse["error"];
+            self.errors = jsonResponse.error
           }
         })
         .catch(function (error) {
-          self.errors = error;
-          console.log(error);
-        });
-    },
+          self.errors = error
+          console.log(error)
+        })
+    }
   },
   data: function () {
-    return {};
-  },
-});
+    return {}
+  }
+})
 
-const Logout = Vue.component("logout", {
+const Logout = Vue.component('logout', {
   template: `
   <div class="jumbotron">
   <h1>{{message.message}}</h1>
   </div>`,
   mounted: function () {
-    let self = this;
-    fetch("api/auth/logout", {
-      method: "POST",
+    const self = this
+    fetch('api/auth/logout', {
+      method: 'POST',
       body: {},
       headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": token,
-      },
+        'Content-Type': 'application/json',
+        'X-CSRFToken': token
+      }
     })
       .then(function (response) {
-        return response.json();
+        return response.json()
       })
       .then(function (jsonResponse) {
-        console.log(jsonResponse);
+        console.log(jsonResponse)
 
-        self.message = jsonResponse;
-        console.log(self.message);
-        localStorage.removeItem("token");
-        localStorage.removeItem("current_user");
+        self.message = jsonResponse
+        console.log(self.message)
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('current_user')
       })
       .catch(function (error) {
-        console.log(error);
-      });
+        console.log(error)
+      })
   },
   data: function () {
     return {
-      message: "",
-    };
-  },
-});
+      message: ''
+    }
+  }
+})
 
-const Register = Vue.component("register-form", {
+const Register = Vue.component('register-form', {
   template: `
     <div>
 
@@ -263,48 +263,48 @@ const Register = Vue.component("register-form", {
   `,
   methods: {
     registerUser: function () {
-      let self = this;
-      let RegisterForm = document.getElementById("registerForm");
-      let form_data = new FormData(RegisterForm);
-      fetch("/api/users/register", {
-        method: "POST",
+      const self = this
+      const RegisterForm = document.getElementById('registerForm')
+      const form_data = new FormData(RegisterForm)
+      fetch('/api/users/register', {
+        method: 'POST',
         body: form_data,
         headers: {
-          "X-CSRFToken": token,
+          'X-CSRFToken': token
         },
-        credentials: "same-origin",
+        credentials: 'same-origin'
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse);
-          if (jsonResponse.hasOwnProperty("errors")) {
-            self.error = true;
-            self.message = jsonResponse.errors;
+          console.log(jsonResponse)
+          if (jsonResponse.hasOwnProperty('errors')) {
+            self.error = true
+            self.message = jsonResponse.errors
           } else {
-            if (jsonResponse.hasOwnProperty("message")) {
+            if (jsonResponse.hasOwnProperty('message')) {
               router.push({
-                name: "login",
-                params: { notifs: jsonResponse.message, success: true },
-              });
+                name: 'login',
+                params: { notifs: jsonResponse.message, success: true }
+              })
             }
           }
         })
         .catch(function (error) {
-          console.log(error);
-        });
-    },
+          console.log(error)
+        })
+    }
   },
   data: function () {
     return {
       error: false,
-      message: "",
-    };
-  },
-});
+      message: ''
+    }
+  }
+})
 
-const profile = Vue.component("profile", {
+const profile = Vue.component('profile', {
   template: `
     <div>
         <section class="center-section">
@@ -353,110 +353,109 @@ const profile = Vue.component("profile", {
     `,
   methods: {
     generateProfile: function () {
-      let self = this;
-      let token = localStorage.getItem("token");
-      let id = JSON.parse(atob(token.split(".")[1])).id;
+      const self = this
+      const token = sessionStorage.getItem('token')
+      const id = JSON.parse(atob(token.split('.')[1])).id
       fetch(`/api/users/${id}`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
-        credentials: "same-origin",
+        credentials: 'same-origin'
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          jsonResponse[0].joined_on = convertDate(jsonResponse[0].joined_on);
-          self.user = jsonResponse[0];
-          self.follower();
-          self.getPosts();
+          jsonResponse[0].joined_on = convertDate(jsonResponse[0].joined_on)
+          self.user = jsonResponse[0]
+          self.follower()
+          self.getPosts()
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     following_user: function () {
-      let self = this;
-      let id = JSON.parse(atob(token.split(".")[1])).id;
-      payload = JSON.stringify({ user_id: self.user.id, follower_id: id });
+      const self = this
+      const id = JSON.parse(atob(token.split('.')[1])).id
+      payload = JSON.stringify({ user_id: self.user.id, follower_id: id })
       fetch(`/api/users/ ${self.user.id} + /follow`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + sessionStorage.getItem('token'),
+          'Content-Type': 'application/json'
         },
         body: payload,
-        credentials: "same-origin",
+        credentials: 'same-origin'
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          self.follow_msg = "Following";
-          self.message = jsonResponse["message"];
-          self.followers = self.followerCount();
-          console.log(jsonResponse);
+          self.follow_msg = 'Following'
+          self.message = jsonResponse.message
+          self.followers = self.followerCount()
+          console.log(jsonResponse)
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     follower: function () {
-      let self = this;
+      const self = this
       fetch(`/api/users/${self.user.id}/follow`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          self.followers = jsonResponse[0].followers;
-          
+          self.followers = jsonResponse[0].followers
         })
         .catch(function (error) {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     getPosts: function () {
-      let self = this;
+      const self = this
       fetch(`/api/users/${self.user.id}/posts`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
       })
         .then(function (response) {
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse);
-          Vue.set(self.posts, "posts", jsonResponse[0]);
+          console.log(jsonResponse)
+          Vue.set(self.posts, 'posts', jsonResponse[0])
         })
         .catch(function (error) {
-          console.log(error);
-        });
-    },
+          console.log(error)
+        })
+    }
   },
 
   data: function () {
     return {
       user: [],
-      follow_msg: "Follow",
-      followers: new Number(),
-      posts: [],
-    };
+      follow_msg: 'Follow',
+      followers: 0,
+      posts: []
+    }
   },
   created: function () {
-    this.generateProfile();
-  },
-});
+    this.generateProfile()
+  }
+})
 
-const explore = Vue.component("explore", {
+const explore = Vue.component('explore', {
   template: `
     <div class="explore-div">
       <div>
@@ -496,44 +495,44 @@ const explore = Vue.component("explore", {
     </div>
     `,
   created: function () {
-    self = this;
+    const self = this
 
-    fetch("/api/posts", {
-      method: "GET",
+    fetch('/api/posts', {
+      method: 'GET',
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
+        Authorization: 'Bearer ' + sessionStorage.getItem('token')
       },
-      credentials: "same-origin",
+      credentials: 'same-origin'
     })
       .then(function (response) {
-        return response.json();
+        return response.json()
       })
       .then(function (jsonResponse) {
-        console.log(jsonResponse);
+        console.log(jsonResponse)
         self.posts = jsonResponse.Posts
       })
       .catch(function (error) {
-        console.log(error);
-      });
+        console.log(error)
+      })
   },
   methods: {
     newpost: function () {
-      this.router.push("/post");
+      this.router.push('/post')
     },
     viewUser: function (id) {
-      localStorage.setItem("id_details", id);
-      this.router.push(`/users/${id}`);
-    },
+      sessionStorage.setItem('id_details', id)
+      this.router.push(`/users/${id}`)
+    }
   },
   data: function () {
     return {
       posts: [],
-      postFlag: false,
-    };
-  },
-});
+      postFlag: false
+    }
+  }
+})
 
-const newpost = Vue.component("newpost", {
+const newpost = Vue.component('newpost', {
   template: `
     <div class="container-fluid create-post">
         <div class="row justify-content-center">
@@ -564,105 +563,105 @@ const newpost = Vue.component("newpost", {
     `,
   methods: {
     newPost: function () {
-      let self = this;
-      let postForm = document.getElementById("post-form");
-      let form_data = new FormData(postForm);
+      const self = this
+      const postForm = document.getElementById('post-form')
+      const form_data = new FormData(postForm)
 
       fetch(`/api/users/${self.id}/posts`, {
-        method: "POST",
+        method: 'POST',
         body: form_data,
         headers: {
-          "X-CSRFToken": token,
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          'X-CSRFToken': token,
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
         },
-        credentials: "same-origin",
+        credentials: 'same-origin'
       })
         .then(function (response) {
-          console.log(response);
+          console.log(response)
           if (!response.ok) {
-            self.router.push("/login");
+            self.router.push('/login')
           }
-          return response.json();
+          return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse);
-          self.message = jsonResponse["message"];
-          postForm.reset();
+          console.log(jsonResponse)
+          self.message = jsonResponse.message
+          postForm.reset()
           setTimeout(function () {
-            self.message = "";
-          }, 5000);
+            self.message = ''
+          }, 5000)
         })
         .catch(function (error) {
-          console.log(error);
-          self.errors = error;
-        });
-    },
+          console.log(error)
+          self.errors = error
+        })
+    }
   },
   data: function () {
     return {
-      message: "",
-      id: localStorage.getItem("id"),
-      errors: [],
-    };
-  },
-});
+      message: '',
+      id: sessionStorage.getItem('id'),
+      errors: []
+    }
+  }
+})
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   routes: [
     {
-      path: "/",
-      component: Home,
+      path: '/',
+      component: Home
     },
     {
-      path: "*",
-      component: NotFound,
+      path: '*',
+      component: NotFound
     },
     {
-      name: "login",
-      path: "/login",
-      component: Login,
+      name: 'login',
+      path: '/login',
+      component: Login
     },
     {
-      name: "logout",
-      path: "/logout",
-      component: Logout,
+      name: 'logout',
+      path: '/logout',
+      component: Logout
     },
     {
-      name: "register",
-      path: "/register",
-      component: Register,
+      name: 'register',
+      path: '/register',
+      component: Register
     },
     {
-      name: "profile",
-      path: "/users/:user_id",
-      component: profile,
+      name: 'profile',
+      path: '/users/:user_id',
+      component: profile
     },
     {
-      name: "explore",
-      path: "/explore",
-      component: explore,
+      name: 'explore',
+      path: '/explore',
+      component: explore
     },
     {
-      path: "/users/id",
-      name: "users",
-      component: profile,
+      path: '/users/id',
+      name: 'users',
+      component: profile
     },
     {
-      name: "newpost",
-      path: "/post",
-      component: newpost,
-    },
-  ],
-});
+      name: 'newpost',
+      path: '/post',
+      component: newpost
+    }
+  ]
+})
 
 // eslint-disable-next-line no-unused-vars
-let app = new Vue({
-  el: "#app",
-  router,
-});
+const app = new Vue({
+  el: '#app',
+  router
+})
 
 const convertDate = (str) => {
-  date = str.split(" ");
-  return [date[2], date[3]].join(" ");
-};
+  date = str.split(' ')
+  return [date[2], date[3]].join(' ')
+}
