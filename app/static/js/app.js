@@ -455,31 +455,99 @@ const profile = Vue.component('profile', {
   }
 })
 
+const Newpost = Vue.component('NewPost', {
+  template: `<div class="explore-div">
+
+    <form @submit.prevent="Newpost" id="NewpostForm" method="POST" >
+    <div class="form-group mb-3 my-3">
+        <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
+        <input class="form-control-file" type="file" id="photo" name="profile_photo">
+    </div>
+
+
+    <div class="form-group">
+
+    <label for="Caption" class="form-label font-weight-bold text-muted">Caption</label>
+    <textarea class="form-control" name="Caption"  id="biography" cols=40, rows=2></textarea>
+    </div>
+
+    </form>
+  
+
+   
+    
+    </div>`,
+  methods: {
+    Newpost: function () {
+      const self = this
+      const NewpostForm = document.getElementById('NewpostForm')
+      const form_data = new FormData(NewpostForm)
+      fetch('/api/users/{user_id}/posts', {
+        method: 'POST',
+        body: form_data,
+        headers: {
+          'X-CSRFToken': token
+        },
+        credentials: 'same-origin'
+      })
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse)
+        })
+    },
+
+    data: function () {
+      return {}
+    }
+  }
+})
+
 const explore = Vue.component('explore', {
   template: `
     <div class="explore-div">
-      <div>
-        <section class="center-section">
-          <div class="container-fluid">
-            <div class="row justify-content-center">
-              <div class="col col-lg-5 col-md-7">
-                <div v-for="post in posts" class="card mb-5 ">
-                  <div class="card-header bg-white d-flex align-items-center">
-                    <img :src=post.profile_photo style="width:40px"/>
-                      <a @click="viewUser(post.id)" class="pointer">
-                        <h3 class="ml-2">{{post.username}}</h3></a>
-                  </div>
-                  <img class="" v-bind:src=post.photo alt="Card image cap" class="img-fluid" style="height:18rem;">
-                  <div class="card-body py-3 px-2">
-                    <p class="card-text text-justify">{{post.caption}}</p>
-                      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                  </div>
-                  <div class="card-footer d-flex justify-content-between bg-white font-wight-bold border-0 mt-2">
-                    <div>
-                      <span>
-                        <i class="far fa-heart" ></i>
-                          {{post.likes}} Likes
-                      </span>
+    
+        <div>
+            <section  class="center-section">
+                <div class="container-fluid">
+                
+                    <div class="row justify-content-center">
+                        <div class="col col-lg-5 col-md-7">
+                        
+                            <div v-for="post in posts" class="card ">
+                            
+                                <div class="card-header bg-white d-flex align-items-center">
+                                
+                                    <img  v-bind:src=post.profile_photo style="width:40px"/>
+                                    
+                                    <a @click="viewUser(post.id)" class="pointer">
+
+                                    <h3 class="ml-2">{{post.username}}</h3></a>
+                                    
+
+                                </div>
+                                <img  v-bind:src=post.photo  />
+                                <img src="/home/lincoln/Documents/Git_hub/info3180-project2/app/static/uploads/childbirth.png"/>
+                                <div class="card-body py-3 px-2">
+                                    <p class="card-text text-justify">{{post.caption}}</p>
+                                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                                </div>
+                                <div class="card-footer d-flex justify-content-between bg-white font-wight-bold border-0 mt-2">
+                                    <div>
+                                        <span>
+                                            <i class="far fa-heart" ></i>
+                                            {{post.likes}} Likes
+                                        </span>
+                                    </div>
+                                    <div>{{post.created_on}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                        <router-link tag='button' id="btn2" :to="{name:'newpost'}" >New Post</router-link>
+                            
+                        </div>
                     </div>
                     <div>{{post.created_on}}</div>
                   </div>
@@ -544,16 +612,22 @@ const newpost = Vue.component('newpost', {
             <div class="col col-xl-4  col-lg-6 col-md-5 col-sm-8 text-center">
 
 
-                <form  @submit.prevent="newPost" id='post-form' action="" class="border px-4 py-3 bg-white">
+                <form  @submit.prevent="newPost" id='post-form'  class="border px-4 py-3 bg-white">
                     <div class="form-input text-left">
                     <div class="form-group mb-3 my-3">
                         <label class="form-label font-weight-bold text-muted" for="photo" >Photo</label>
-                        <input class="form-control-file" type="file" id="photo" name="profile_photo">
+                        <input class="form-control-file" type="file" id="" name="photo">
+                    </div>
+
+                    <div class="form-input text-left my-4">
+                        <label for="caption" class="d-block font-weight-bold text-muted">Caption</label>
+                        <textarea name="caption" id="" cols="33" rows="3" class="form-control"
+                        placeholder="Write a Caption..."></textarea>
                     </div>
 
                     </div>
                     <button type="submit" id="btn" class="btn btn-block btn-outline-danger">NewPost</button>
-                    </div>
+                    
                     </form>
                 </div>
             </div>
@@ -649,7 +723,7 @@ const router = new VueRouter({
     },
     {
       name: 'newpost',
-      path: '/post',
+      path: '/posts/new',
       component: newpost
     }
   ]

@@ -77,18 +77,24 @@ def logout():
 @app.route('/api/users/<user_id>/posts', methods=['GET', 'POST'])
 def post(user_id):
     form = UploadForm()
+    print('hole')
+    print( form.photo.data,'\n',form.caption.data)
+    
     if request.method == 'POST' and form.validate_on_submit():
-        token = request.headers["Authorization"][7:]
-        jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+       
+        '''token = request.headers["Authorization"][7:]
+        jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")'''
+        print( form.photo.data,'\n',form.caption.data)
         photo = form.photo.data
-        caption = request.json['description']
+        caption = form.caption.data
         filename = secure_filename(photo.filename)
         photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         created_on = datetime.today().strftime('%Y-%m-%d')
         post = Posts(user_id, filename, caption, created_on)
         db.session.add(post)
         db.session.commit()
-        return jsonify({"message": "Successfully created a new post"}), 201
+        print('yes')
+        return jsonify({"message": "Successfully created a new post"}),201
 
     elif request.method == 'GET':
         token = request.headers["Authorization"][7:]
@@ -153,6 +159,7 @@ def posts():
     if request.method == "GET":
         posts = Posts.query.all()
         for post in posts:
+           
 
             likes=len(Likes.query.filter_by(id=post.id).all())
             payload={
