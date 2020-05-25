@@ -53,7 +53,7 @@ def login():
             issued_date = datetime.utcnow()
             exp_date = issued_date + timedelta(minutes=15)
             payload = {"id": user.id, "name": user.username,
-                    "iat": issued_date, "exp": exp_date}
+                    "iat": issued_date}
             token = jwt.encode(
                 payload, app.config["SECRET_KEY"], algorithm="HS512").decode('UTF-8')
             message = "User successfully logged in"
@@ -91,7 +91,8 @@ def post(user_id):
         post = Posts(user_id, filename, caption, created_on)
         db.session.add(post)
         db.session.commit()
-        return jsonify({"message": "Successfully created a new post"}), 201
+        print('yes')
+        return jsonify({"message": "Successfully created a new post"}),201
 
     elif request.method == 'GET':
         token = request.headers["Authorization"][7:]
@@ -114,12 +115,12 @@ def post(user_id):
         return "Form did not validate"
 
 
-@app.route("/api/users/<int:user_id>", methods=['GET'])
+@app.route("/api/users/<user_id>", methods=['GET'])
 def user(user_id):
     if request.method == 'GET':
-        #token = request.headers["Authorization"][7:]
-        #decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
-        user = Users.query.filter_by(user_id=user_id).first()
+        token = request.headers["Authorization"][7:]
+        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
+        user = Users.query.filter_by(id=user_id).first()
         user_info = [{"id": user.id,
                     "username": user.username,
                     "firstname": user.firstname,
@@ -129,11 +130,8 @@ def user(user_id):
                     "location": user.location,
                     "profile_photo": user.profile_photo,
                     "joined_on": user.joined_on}]
-<<<<<<< HEAD
 
-=======
         print(jsonify(user_info))
->>>>>>> 55ae1bcbb17c8e843725cd9fff6a6a97a1c5f0e8
         return jsonify(user_info)
 
 
@@ -161,12 +159,11 @@ def posts():
     if request.method == "GET":
         posts = Posts.query.all()
         for post in posts:
+           
 
-            likes=len(Likes.query.filter(post_id=post.id).all())
+            likes=len(Likes.query.filter_by(post_id=post.id).all())
             payload={"id":post.id,
             "user_id":post.user_id,
-            "profile_photo": os.path.join(app.config['UPLOAD_FOLDER'],user.profile_photo),
-            "username": user.username,
             "photo":post.photo,
             "caption":post.caption,
             "created_on":post.created_on,
