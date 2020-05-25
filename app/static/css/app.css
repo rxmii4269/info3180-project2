@@ -6,6 +6,10 @@
 }
 
 
+body{
+    padding-top: 8rem;
+}
+
 /* photogram font */
 
 .billabong {
@@ -65,8 +69,7 @@ p {
 .home-contain {
     display: flex;
     justify-content: space-between;
-    padding-top: 200px;
-    padding-bottom: 200px;
+    padding-top: 5rem;
 }
 
 .home-contain1 {
@@ -195,9 +198,6 @@ input {
     display: flex;
 }
 
-.card {
-    border-radius: 0px;
-}
 
 p {
     font-size: 0.9rem;

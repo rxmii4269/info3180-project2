@@ -4,14 +4,14 @@
 Vue.component("app-header", {
   template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-        <img id="icon" src= "https://previews.123rf.com/images/ukususha/ukususha1612/ukususha161200171/67282542-photo-camera-icon-vector-watercolor-splash-illustration.jpg" height="60" />
-        <a class="navbar-brand billabong" href="#">Photogram</a>
+    <img src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png" class="pd-8"/><a class="navbar-brand billabong" href="#">Photogram</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+        <ul class="navbar-nav">
             <li class="nav-item active">
                 <router-link class="nav-link" to="/" >Home <span class="sr-only">(current)</span></router-link>
             </li>
@@ -19,18 +19,14 @@ Vue.component("app-header", {
                 <router-link class="nav-link" to="/explore">Explore</router-link>
             </li>
             <li class="nav-item active">
-                <router-link class="nav-link" to="/profile" >My Profile</router-link>
+                <router-link class="nav-link" :to="{name:'profile',params:{user_id:1}}">My Profile</router-link>
             </li>
             <li  class="nav-item active">
                 <router-link class="nav-link" to="/logout">Logout</router-link>
             </li>
-            <li  class="nav-item">
-                <router-link class="nav-link active" to="/login">Login</router-link>
-            </li>
-
         </ul>
-    </div>
-</nav>
+      </div>
+    </nav>
 
     `,
   methods: {
@@ -73,8 +69,7 @@ Vue.component("app-header", {
 const Home = Vue.component("home", {
   template: `
 
-    <div>
-        <div  class="home-contain" >
+        <div class="home-contain" >
 
             <div>
                 <img  id="home-image" src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" height="350"/>
@@ -99,7 +94,6 @@ const Home = Vue.component("home", {
                 </div>
             </div>
         </div>
-</div>
     `,
 
   data: function () {
@@ -110,9 +104,7 @@ const Home = Vue.component("home", {
 // eslint-disable-next-line no-undef
 const NotFound = Vue.component("not-found", {
   template: `
-    <div>
         <h1>404 - Not Found</h1>
-    </div>
     `,
   data: function () {
     return {};
@@ -123,28 +115,22 @@ const NotFound = Vue.component("not-found", {
 const Login = Vue.component("login", {
   template: `
     <div>
-        <div>
-        </div>
-
-        <h1 class="center-div" id="head">Login</h1>
-        <br>
-    <div class="login">
+      <h1 class="center-div" id="head">Login</h1>
+      <div class="login">
         <form @submit.prevent="loginUser" id="loginForm" class="" name="loginForm">
-        <div class="form-group">
+          <div class="form-group">
             <label for="username">Username</label>
             <input class="form-control"  type="text"  name="username">
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label for="password">Password</label>
             <input class="form-control" id="password" type="password" name="password" >
-        </div>
-        <br>
-        <button type="submit" id="btn" class="btn btn-block btn-outline-danger">Login</button>
+          </div>
+          <button type="submit" id="btn" class="btn btn-block btn-outline-danger">Login</button>
         </form>
-        </div>
+      </div>
+    </div>
 
-    </div>
-    </div>
     `,
   methods: {
     loginUser: function () {
@@ -168,9 +154,9 @@ const Login = Vue.component("login", {
         })
         .then(function (jsonResponse) {
           if (jsonResponse.hasOwnProperty("token")) {
-            let jwt_token = jsonResponse.token;
-            let id = JSON.parse(atob(jwt_token.split(".")[1])).id;
-            localStorage.setItem("token", jwt_token);
+            let token = jsonResponse.token;
+            let id = JSON.parse(atob(token.split(".")[1])).id;
+            localStorage.setItem("token", token);
             localStorage.setItem("current_user", id);
             self.message = jsonResponse["message"];
 
@@ -187,28 +173,45 @@ const Login = Vue.component("login", {
         });
     },
   },
+  data: function () {
+    return {};
+  },
 });
 
 const Logout = Vue.component("logout", {
   template: `
-  <div>
+  <div class="jumbotron">
+  <h1>{{message.message}}</h1>
   </div>`,
-  created: function () {
+  mounted: function () {
+    let self = this;
     fetch("api/auth/logout", {
-      method: "GET",
+      method: "POST",
+      body: {},
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": token,
+      },
     })
       .then(function (response) {
         return response.json();
       })
       .then(function (jsonResponse) {
         console.log(jsonResponse);
+
+        self.message = jsonResponse;
+        console.log(self.message);
         localStorage.removeItem("token");
-        router.go();
-        router.push("/");
+        localStorage.removeItem("current_user");
       })
       .catch(function (error) {
         console.log(error);
       });
+  },
+  data: function () {
+    return {
+      message: "",
+    };
   },
 });
 
@@ -306,9 +309,9 @@ const profile = Vue.component("profile", {
     <div>
         <section class="center-section">
         <div class="container-fluid">
-            <div class="row justify-content-between bg-white border info align-items-center py-2 pr-0 pl-2">
-                <img v-bind:src="'/static/upload/' + user.profile_photo" alt="" class="" style="height:120px;">
-                <div class="col col-lg-7 col-md-5 col-sm-5">
+            <div  class="row justify-content-between bg-white border info align-items-center py-2 pr-5 pl-2">
+                <img v-bind:src="'/static/uploads/' + user.profile_photo" alt="" class="" style="height:120px;">
+                <div class="col">
                     <h1 class="mb-4 font-weight-bold">{{user.firstname}} {{user.lastname}}</h1>
                     <p class="line-h text-muted">{{user.location}}</p>
                     <p class="line-h text-muted">Member since {{user.joined_on}} </p>
@@ -317,22 +320,22 @@ const profile = Vue.component("profile", {
                 <div class="col-lg-3 justify-content-end float-right">
                     <div class="row justify-content-end">
                         <div>
-                            <p class="font-weight-bold text-center ">6</p>
+                            <p class="font-weight-bold text-center ">{{posts.length}}</p>
                             <p class="text-muted font-weight-bold line-h">Posts</p>
                         </div>
                         <div class="ml-3">
-                            <p class="font-weight-bold text-center">{{user.followers}}</p>
+                            <p class="font-weight-bold text-center">{{followers}}</p>
                             <p class="text-muted font-weight-bold line-h">Followers</p>
                         </div>
                     </div>
                     <div class="row justify-content-end ml-auto mt-3">
-                        <button v-on:click="following_user" class="btn btn-primary text-white btnblock" style="width:120px;">{{follow_msg}}</button>
+                        <button v-on:click="following_user" class="btn btn-primary px-5 text-white btnblock">{{follow_msg}}</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-center mt-3">
+        <div v-if="posts != 0" class="row justify-content-center mt-3">
             <div class="col col-lg-4">
 
                 <img src="https://wonderfulengineering.com/wp-content/uploads/2014/07/display-wallpaper-37.jpg" alt="" class="img-fluid" style="height:15rem; width: 99%;">
@@ -348,44 +351,43 @@ const profile = Vue.component("profile", {
     </section>
 </div>
     `,
-  created: function () {
-    let self = this;
-    let token = localStorage.getItem("token");
-    self.ID = JSON.parse(atob(token.split(".")[1])).id;
-    fetch(`/api/users/${self.ID}`, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-      credentials: "same-origin",
-    })
-      .then(function (Response) {
-        if (!localStorage.getItem("token")) {
-          self.router.push("/login");
-        } else {
-          return Response.json();
-        }
-      })
-      .then(function (jsonResponse) {
-        console.log(jsonResponse);
-        //console.log(self.user.firstname);
-        self.user = jsonResponse;
-        console.log(self.user);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  },
-
   methods: {
+    generateProfile: function () {
+      let self = this;
+      let token = localStorage.getItem("token");
+      let id = JSON.parse(atob(token.split(".")[1])).id;
+      fetch(`/api/users/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "same-origin",
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          jsonResponse[0].joined_on = convertDate(jsonResponse[0].joined_on);
+          self.user = jsonResponse[0];
+          self.follower();
+          self.getPosts();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     following_user: function () {
       let self = this;
-      fetch(`/api/users/ ${self.ID} + /follow`, {
+      let id = JSON.parse(atob(token.split(".")[1])).id;
+      payload = JSON.stringify({ user_id: self.user.id, follower_id: id });
+      fetch(`/api/users/ ${self.user.id} + /follow`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
-          "X-CSRFToken": token,
+          "Content-Type": "application/json",
         },
+        body: payload,
         credentials: "same-origin",
       })
         .then(function (response) {
@@ -403,7 +405,7 @@ const profile = Vue.component("profile", {
     },
     follower: function () {
       let self = this;
-      fetch(`/api/users/${self.ID}/follow`, {
+      fetch(`/api/users/${self.user.id}/follow`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -413,29 +415,44 @@ const profile = Vue.component("profile", {
           return response.json();
         })
         .then(function (jsonResponse) {
-          self.followers = jsonResponse["followers"];
-          if (jsonResponse["following"]) {
-            self.btn_message = "Following";
-          } else {
-            self.btn_message = "Follow";
-          }
+          self.followers = jsonResponse[0].followers;
+          
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-
-    posts: function () {},
-
-    data: function () {
-      return {
-        user: "",
-        ID: "",
-        follow_msg: "Follow",
-        posts: [],
-        follow: 0,
-      };
+    getPosts: function () {
+      let self = this;
+      fetch(`/api/users/${self.user.id}/posts`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+          Vue.set(self.posts, "posts", jsonResponse[0]);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
+  },
+
+  data: function () {
+    return {
+      user: [],
+      follow_msg: "Follow",
+      followers: new Number(),
+      posts: [],
+    };
+  },
+  created: function () {
+    this.generateProfile();
   },
 });
 
@@ -495,6 +512,7 @@ const Newpost = Vue.component("NewPost", {
 const explore = Vue.component("explore", {
   template: `
     <div class="explore-div">
+<<<<<<< HEAD
     
         <div>
             <section  class="center-section">
@@ -536,13 +554,42 @@ const explore = Vue.component("explore", {
                         <router-link tag='button' id="btn2" :to="{name:'newpost'}" >New Post</router-link>
                             
                         </div>
+=======
+      <div>
+        <section class="center-section">
+          <div class="container-fluid">
+            <div class="row justify-content-center">
+              <div class="col col-lg-5 col-md-7">
+                <div v-for="post in posts" class="card mb-5 ">
+                  <div class="card-header bg-white d-flex align-items-center">
+                    <img :src=post.profile_photo style="width:40px"/>
+                      <a @click="viewUser(post.id)" class="pointer">
+                        <h3 class="ml-2">{{post.username}}</h3></a>
+                  </div>
+                  <img class="" v-bind:src=post.photo alt="Card image cap" class="img-fluid" style="height:18rem;">
+                  <div class="card-body py-3 px-2">
+                    <p class="card-text text-justify">{{post.caption}}</p>
+                      <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                  </div>
+                  <div class="card-footer d-flex justify-content-between bg-white font-wight-bold border-0 mt-2">
+                    <div>
+                      <span>
+                        <i class="far fa-heart" ></i>
+                          {{post.likes}} Likes
+                      </span>
+>>>>>>> d5d1bac72f70a31dd57df53dc2531054aaba24dc
                     </div>
+                    <div>{{post.created_on}}</div>
+                  </div>
                 </div>
-            </section>
-        </div>
-
-
-
+              </div>
+              <div>
+                <button id="btn2" v-on:click="newpost ">New Post</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
     `,
   created: function () {
@@ -552,21 +599,24 @@ const explore = Vue.component("explore", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
-        "X-CSRFToken": token,
       },
       credentials: "same-origin",
     })
       .then(function (response) {
         return response.json();
       })
+<<<<<<< HEAD
       .then(function (data) {
         console.log(data);
 
         self.posts = data.Posts;
         console.log("iam post", self.posts)
       })
+=======
+>>>>>>> d5d1bac72f70a31dd57df53dc2531054aaba24dc
       .then(function (jsonResponse) {
         console.log(jsonResponse);
+        self.posts = jsonResponse.Posts
       })
       .catch(function (error) {
         console.log(error);
@@ -681,6 +731,10 @@ const router = new VueRouter({
       component: Home,
     },
     {
+      path: "*",
+      component: NotFound,
+    },
+    {
       name: "login",
       path: "/login",
       component: Login,
@@ -697,7 +751,7 @@ const router = new VueRouter({
     },
     {
       name: "profile",
-      path: "/profile",
+      path: "/users/:user_id",
       component: profile,
     },
     {
@@ -715,11 +769,6 @@ const router = new VueRouter({
       path: "/posts/new",
       component: newpost,
     },
-
-    {
-      path: "*",
-      component: NotFound,
-    },
   ],
 });
 
@@ -728,3 +777,8 @@ let app = new Vue({
   el: "#app",
   router,
 });
+
+const convertDate = (str) => {
+  date = str.split(" ");
+  return [date[2], date[3]].join(" ");
+};
