@@ -136,6 +136,5 @@ node_modules
 .eslintrc.json
 
 #ignore uploads folder
-uploads/
 .eslintrc.js
 package-lock.json
