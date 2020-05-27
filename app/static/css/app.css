@@ -1,249 +1,271 @@
 @font-face {
-    font-family: 'Billabong';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Billabong'), url('../fonts/Billabong.woff') format('woff');
-}
-
-
-body{
-    padding-top: 8rem;
+  font-family: "Billabong";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Billabong"), url("../fonts/Billabong.woff") format("woff");
 }
 
 /* photogram font */
 
 .billabong {
-    font-family: 'Billabong';
-    font-weight: bold;
-    font-size: 17pt;
-    letter-spacing: 1px;
+  font-family: "Billabong";
+  font-weight: bold;
+  font-size: 17pt;
+  letter-spacing: 1px;
 }
 
 .billabong-bold {
-    font-family: 'Billabong';
-    font-weight: bold;
-    font-size: 26pt;
-    letter-spacing: 1px;
+  font-family: "Billabong";
+  font-weight: bold;
+  font-size: 26pt;
+  letter-spacing: 1px;
 }
 
 .blue {
-    background-color: #3897f0;
+  background-color: #3897f0;
 }
-
 
 /** photogram icon */
 
 #icon {
-    border-radius: 50%;
+  height: 30px;
+  width: 30px;
 }
 
+/* header nav */
+
+ul {
+  font-size: 11pt;
+}
 
 /** general */
 
 body {
-    background-color: lightgray;
+  padding-top: 8rem;
+  background-color: beige;
+}
+
+span{
+    cursor: pointer;
 }
 
 p {
-    font-weight: 500;
-    font-size: 16px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+a{
+    color: black;
+}
+
+a:hover{
+    color: black;
 }
 
 .center-div {
-    position: absolute;
-    left: 35%;
-    top: 18%;
+  left: 35%;
+  top: 18%;
 }
-
 
 /** Home page*/
 
 #home-head {
-    font-style: italic;
+  font-style: italic;
 }
 
 #home-image {
-    box-shadow: 0 4px 8px 0 rgb(0, 89, 255);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .home-contain {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 5rem;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 5rem;
 }
 
 .home-contain1 {
-    padding: 20px;
-    background-color: beige;
-    box-shadow: 0 4px 8px 0 rgb(0, 89, 255);
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .home-item {
-    display: flex;
-    margin: 0 auto;
-    width: 50%;
+  display: flex;
+  margin: 0 auto;
+  width: 50%;
 }
 
-.home-item1 {
-    display: flex;
-    justify-content: space-around;
+.boxshadow {
+  box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.1);
 }
 
-#btn1 {
-    background-color: rgb(152, 211, 63);
-    border-radius: 10px;
-    margin: 0 auto;
-    padding: 10px;
-    padding-left: 80px;
-    padding-right: 80px;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
+.button-group {
+  display: flex;
+  justify-content: space-around;
 }
 
-#btn2 {
-    background-color: rgb(37, 37, 245);
-    border-radius: 10px;
-    margin: 0 auto;
-    padding: 10px;
-    padding-left: 80px;
-    padding-right: 80px;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
+.green{
+    background-color: #9acd32;
 }
 
+#register-btn {
+  background-color: #9acd32;
+  margin: 0 auto;
+  padding: 7px;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
+
+#login-btn {
+  background-color: #3897f0;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
 
 /** form pages  */
 
 #head {
-    margin: 0 auto;
-    width: 40%;
+  margin: 0 auto;
+  width: 40%;
+  font-size: larger;
 }
 
 .myform {
-    margin: 0 auto;
-    width: 30%;
-    font-weight: 500;
-    background-color: whitesmoke;
-    border-top: solid 2px;
-    border-top-color: rgb(42, 56, 252);
-    padding: 35px;
-    position: absolute;
-    left: 35%;
-    top: 30%;
+  margin: 0 auto;
+  width: 30%;
+  font-weight: 500;
+  background-color: white;
+  padding-top: 15px;
+  position: static;
+  padding: 35px;
+  left: 35%;
+  top: 30%;
 }
 
 .login {
-    margin: 0 auto;
-    width: 30%;
-    font-weight: 500;
-    background-color: whitesmoke;
-    border-top: solid 2px;
-    border-top-color: rgb(42, 56, 252);
-    padding: 35px;
-    position: absolute;
-    left: 35%;
-    top: 30%;
+  margin: 0 auto;
+  width: 30%;
+  font-weight: 500;
+  background-color: white;
+
+  padding-top: 15px;
+  padding: 35px;
+  position: static;
+  left: 35%;
+  top: 30%;
 }
 
 #btn {
-    margin: 0 auto;
-    width: 100%;
-    background-color: rgb(123, 190, 22);
-    font-weight: bold;
-    color: white;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border: 1px solid rgb(123, 190, 22);
+  margin: 0 auto;
+  width: 100%;
+  background-color: rgb(123, 190, 22);
+  font-weight: bold;
+  color: white;
+  border: 1px solid rgb(123, 190, 22);
 }
-
 
 /*Profile*/
 
 input {
-    margin: 0 auto;
-    width: 100%;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .info {
-    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.1);
 }
 
 .info h1 {
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 }
 
 .info p {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .line-h {
-    line-height: 0.3;
+  line-height: 0.3;
 }
 
 .center-section {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    top: 20%;
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 20%;
 }
-
 
 /*explore*/
 
 .explore-div {
-    display: flex;
+  display: flex;
 }
 
-
 p {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .card-header h3 {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .bg-green {
-    background-color: #9ACD32;
+  background-color: #9acd32;
 }
 
 .post-title {
-    font-size: 1.1rem;
+  font-size: 1.1rem;
 }
 
 .create-post form {
-    border-radius: 3px;
+  border-radius: 3px;
 }
 
 .create-post form .post-btn {
-    border-radius: 5px;
-    font-weight: 600;
+  border-radius: 5px;
+  font-weight: 600;
 }
 
 .create-post form {
-    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.1);
 }
 
 .create-post .form-input span {
-    font-size: 0.9rem;
-    font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .create-post .form-input button {
-    font-weight: 600;
-    border-radius: 3px;
-    font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 3px;
+  font-size: 0.9rem;
 }
 
 .create-post .form-input label {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 textarea::placeholder {
-    font-weight: 600;
-    font-size: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.newpost-btn {
+  background-color: #3897f0;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
+
+.col-md {
+  flex-grow: 0.7;
 }

@@ -31,7 +31,7 @@ def register():
         hashed_pw = generate_password_hash(
             password, method='pbkdf2:sha512', salt_length=10)
         user = Users(username, hashed_pw, firstname, lastname,
-                    email, location, biography, filename, joined_on)
+                     email, location, biography, filename, joined_on)
         db.session.add(user)
         db.session.commit()
         return jsonify({"message": "User successfully registered"}), 201
@@ -53,7 +53,7 @@ def login():
             issued_date = datetime.utcnow()
             exp_date = issued_date + timedelta(minutes=15)
             payload = {"id": user.id, "name": user.username,
-                    "iat": issued_date}
+                       "iat": issued_date}
             token = jwt.encode(
                 payload, app.config["SECRET_KEY"], algorithm="HS512").decode('UTF-8')
             message = "User successfully logged in"
@@ -73,18 +73,15 @@ def logout():
         return "Error"
 
 
-
 @app.route('/api/users/<user_id>/posts', methods=['GET', 'POST'])
 def post(user_id):
     form = UploadForm()
-    print('hole')
-    print( form.photo.data,'\n',form.caption.data)
-    
+
     if request.method == 'POST' and form.validate_on_submit():
-       
+
         '''token = request.headers["Authorization"][7:]
         jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")'''
-        print( form.photo.data,'\n',form.caption.data)
+
         photo = form.photo.data
         caption = form.caption.data
         filename = secure_filename(photo.filename)
@@ -93,63 +90,62 @@ def post(user_id):
         post = Posts(user_id, filename, caption, created_on)
         db.session.add(post)
         db.session.commit()
-        print('yes')
-        return jsonify({"message": "Successfully created a new post"}),201
+
+        return jsonify({"message": "Successfully created a new post"}), 201
 
     elif request.method == 'GET':
         token = request.headers["Authorization"][7:]
         decoded = jwt.decode(
-            token, app.config['SECRET_KEY'], algorithms="HS512")
+            token, key=app.config['SECRET_KEY'], algorithms="HS512")
         allpost = []
         posts = Posts.query.filter_by(user_id=user_id).all()
         for post in posts:
             payload = {"id": post.id,
-                    "user_id": post.user_id,
-                    "photo": post.photo,
-                    "caption": post.caption,
-                    "created_on": post.created_on}
+                       "user_id": post.user_id,
+                       "photo": post.photo,
+                       "caption": post.caption,
+                       "created_on": post.created_on}
             allpost.append(payload)
-
-
-        return jsonify({"posts":allpost}),201
+        return jsonify({"posts": allpost}), 201
         return jsonify({"posts": allpost}), 200
     else:
-        return "Form did not validate"
+        errors = form_errors(form)
+        return jsonify(errors=errors)
 
 
+# route to user profile
 @app.route("/api/users/<user_id>", methods=['GET'])
 def user(user_id):
     if request.method == 'GET':
-        token = request.headers["Authorization"][7:]
-        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
         user = Users.query.filter_by(id=user_id).first()
         user_info = [{"id": user.id,
-                    "username": user.username,
-                    "firstname": user.firstname,
-                    "lastname": user.lastname,
-                    "email": user.email,
-                    "biography":user.biography,
-                    "location": user.location,
-                    "profile_photo": user.profile_photo,
-                    "joined_on": user.joined_on}]
-        return jsonify(user_info),200
+                      "username": user.username,
+                      "firstname": user.firstname,
+                      "lastname": user.lastname,
+                      "email": user.email,
+                      "biography": user.biography,
+                      "location": user.location,
+                      "profile_photo": user.profile_photo,
+                      "joined_on": user.joined_on}]
+        return jsonify(user_info), 200
 
 
 @app.route('/api/users/<user_id>/follow', methods=['POST', 'GET'])
 def follow(user_id):
     if request.method == 'POST':
         token = request.headers["Authorization"][7:]
-        decoded = jwt.decode(token, app.config['SECRET_KEY'], algorithms="HS512")
-
+        decoded = jwt.decode(
+            token, app.config['SECRET_KEY'], algorithms="HS512")
         user_id = request.json['user_id']
         follower_id = request.json['follower_id']
+
         follow = Follows(user_id, follower_id)
         db.session.add(follow)
         db.session.commit()
         message = [{"message": "You are following that user."}]
         return jsonify(message), 201
     elif request.method == "GET":
-        followers = Follows.query.filter_by(id=user_id).count()
+        followers = Follows.query.filter_by(user_id=user_id).count()
         return jsonify([{"followers": followers}])
 
 
@@ -159,35 +155,37 @@ def posts():
     if request.method == "GET":
         posts = Posts.query.all()
         for post in posts:
-           
 
-            likes=len(Likes.query.filter_by(id=post.id).all())
-            payload={
-            "id":post.id,
-            "user_id":post.user_id,
-            "photo":post.photo,
-            "description":post.caption,
-            "created_on":post.created_on,
-            "likes":likes
+            likes = Likes.query.filter_by(post_id=post.id).count()
+
+            payload = {
+                "id": post.id,
+                "user_id": post.user_id,
+                "photo": post.photo,
+                "caption": post.caption,
+                "created_on": post.created_on,
+                "likes": likes
             }
 
             allpost.append(payload)
 
-        return jsonify({"Posts":allpost}),201
+        return jsonify({"Posts": allpost}), 201
 
     else:
         return jsonify({"message": "Invalid Request"}), 201
     pass
 
-@app.route('/api/post/<post_id>/like', methods=['POST'])
-def like_post():
+
+@app.route('/api/posts/<post_id>/like', methods=['POST'])
+def like_post(post_id):
     if request.method == "POST":
+
         user_id = request.json['user_id']
         post_id = request.json['post_id']
         post = Likes(user_id, post_id)
         db.session.add(post)
         db.session.commit()
-        likes = Likes.query.filter_by(post_id).count()
+        likes = Likes.query.filter_by(post_id=post_id).count()
         message = [{"message": "Post liked", "likes": likes}]
         return jsonify(message), 201
 
