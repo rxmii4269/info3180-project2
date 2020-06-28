@@ -45,7 +45,6 @@ Vue.component('app-header', {
           return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse)
           // remove token from local storage
           sessionStorage.removeItem('photogram.JWT')
           sessionStorage.removeItem('id')
@@ -201,10 +200,7 @@ const Logout = Vue.component('logout', {
         return response.json()
       })
       .then(function (jsonResponse) {
-        console.log(jsonResponse)
-
         self.message = jsonResponse
-        console.log(self.message)
         sessionStorage.removeItem('photogram.JWT')
         sessionStorage.removeItem('current_user')
       })
@@ -284,11 +280,9 @@ const Register = Vue.component('register-form', {
         })
         .then(function (jsonResponse) {
           if (jsonResponse.errors) {
-            console.log(jsonResponse.errors)
             self.message = jsonResponse.errors
             self.theme = 'alert-danger'
           } else {
-            console.log(jsonResponse)
             self.message = [jsonResponse[0].message]
           }
         })
@@ -395,7 +389,7 @@ const profile = Vue.component('profile', {
         .then(function (jsonResponse) {
           self.follow_msg = 'Following'
           self.message = [jsonResponse[0].message]
-          self.theme='alert-success'
+          self.theme = 'alert-success'
           self.followers = self.follower()
           self.btn_theme = 'green'
           self.follows = true
@@ -577,7 +571,6 @@ const explore = Vue.component('explore', {
           return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse)
           self.message = [jsonResponse[0].message]
           self.theme = 'alert-success'
           Vue.set(self.posts, 'likes', jsonResponse[0].likes)
@@ -651,14 +644,12 @@ const newpost = Vue.component('newpost', {
         credentials: 'same-origin'
       })
         .then(function (response) {
-          console.log(response)
           if (!response.ok) {
             self.router.push('/login')
           }
           return response.json()
         })
         .then(function (jsonResponse) {
-          console.log(jsonResponse)
           if (jsonResponse.errors) {
             self.messages = jsonResponse.errors
             self.theme = 'alert-danger'
